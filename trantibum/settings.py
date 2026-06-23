@@ -79,12 +79,16 @@ WSGI_APPLICATION = 'trantibum.wsgi.application'
 #     }
 # }
 
+
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'),
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ.get('MYSQLDATABASE', 'railway'),
+        'USER': os.environ.get('MYSQLUSER', 'root'),
+        'PASSWORD': os.environ.get('MYSQLPASSWORD', ''),
+        'HOST': os.environ.get('MYSQLHOST', 'mysql.railway.internal'),
+        'PORT': os.environ.get('MYSQLPORT', '3306'),
+    }
 }
 
 AUTH_USER_MODEL = 'app.User'
