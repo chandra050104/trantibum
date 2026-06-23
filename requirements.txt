@@ -9,3 +9,5 @@ reportlab==4.4.9
 sqlparse==0.5.5
 tailwind==3.1.5b0
 tzdata==2026.2
+dj-database-url
+gunicorn
