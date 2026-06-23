@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Tugas #{{ penanganan.id }} - LaporWarga</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --navy: #1e3a5f; --navy-muda: #1e4d7b; --navy-gelap: #0f2440;
+            --putih: #ffffff; --putih-abu: #f0f4f8; --putih-gelap: #dde4ed;
+            --hijau: #10b981; --hijau-muda: #34d399; --hijau-gelap: #059669;
+            --shadow: 0 4px 15px rgba(0,0,0,0.3); --shadow-hijau: 0 8px 30px rgba(16,185,129,0.3);
+            --transition: all 0.3s ease;
+        }
+
+        @keyframes bgShiftPetugas {
+            0% { background: linear-gradient(135deg, #1e3a5f 0%, #152d4a 100%); }
+            25% { background: linear-gradient(135deg, #0f2440 0%, #1a3352 100%); }
+            50% { background: linear-gradient(135deg, #152d4a 0%, #1e4d7b 100%); }
+            75% { background: linear-gradient(135deg, #1a3352 0%, #0f2440 100%); }
+            100% { background: linear-gradient(135deg, #1e3a5f 0%, #152d4a 100%); }
+        }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulseHijau { 0%,100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); } 50% { box-shadow: 0 0 0 12px rgba(16,185,129,0); } }
+        @keyframes borderGlowHijau { 0%,100% { border-color: rgba(16,185,129,0.2); } 50% { border-color: rgba(16,185,129,0.5); } }
+        @keyframes float { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
+        @keyframes timelinePulse { 0%,100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); } 50% { box-shadow: 0 0 0 8px rgba(16,185,129,0); } }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6; color: var(--putih-abu); min-height: 100vh;
+            animation: bgShiftPetugas 15s infinite; background-size: 400% 400%;
+            transition: background 1s ease; display: flex;
+        }
+
+        .sidebar { width: 280px; min-height: 100vh; background: rgba(15,36,64,0.7); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-right: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; transition: var(--transition); overflow-y: auto; box-shadow: 4px 0 30px rgba(0,0,0,0.3); }
+        .sidebar-logo { padding: 1.8rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.06); background: rgba(0,0,0,0.15); }
+        .sidebar-logo a { font-size: 1.6rem; font-weight: 800; color: var(--putih); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+        .sidebar-logo .logo-icon { font-size: 1.8rem; animation: float 3s ease-in-out infinite; }
+        .sidebar-logo span { background: linear-gradient(135deg, #34d399, #10b981, #6ee7b7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .sidebar-user { padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.06); background: rgba(0,0,0,0.1); display: flex; align-items: center; gap: 1rem; }
+        .sidebar-avatar { width: 50px; height: 50px; background: linear-gradient(135deg, rgba(16,185,129,0.8), rgba(5,150,105,0.8)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.3rem; color: var(--putih); flex-shrink: 0; box-shadow: 0 4px 20px rgba(16,185,129,0.3); border: 2px solid rgba(255,255,255,0.2); overflow: hidden; }
+        .sidebar-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .sidebar-user-info h4 { font-size: 0.95rem; color: var(--putih); font-weight: 700; }
+        .sidebar-user-info p { font-size: 0.8rem; color: var(--hijau-muda); font-weight: 500; }
+        .sidebar-nav { flex: 1; padding: 1.5rem 1rem; }
+        .sidebar-nav-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.3); padding: 0 0.8rem; margin-bottom: 0.8rem; margin-top: 1.2rem; }
+        .sidebar-nav-label:first-child { margin-top: 0; }
+        .sidebar-nav a { display: flex; align-items: center; gap: 0.8rem; padding: 0.85rem 1rem; color: rgba(255,255,255,0.55); text-decoration: none; border-radius: 12px; transition: var(--transition); font-weight: 500; font-size: 0.9rem; margin-bottom: 0.25rem; }
+        .sidebar-nav a:hover { background: rgba(255,255,255,0.06); color: var(--putih); }
+        .sidebar-nav a.active { background: rgba(16,185,129,0.2); color: var(--hijau-muda); font-weight: 600; border: 1px solid rgba(16,185,129,0.3); }
+        .sidebar-nav a .nav-icon { font-size: 1.2rem; width: 24px; text-align: center; }
+        .sidebar-footer { padding: 1.5rem; border-top: 1px solid rgba(255,255,255,0.06); background: rgba(0,0,0,0.15); }
+        .btn-logout { display: flex; align-items: center; gap: 0.5rem; width: 100%; padding: 0.75rem 1rem; background: rgba(239,68,68,0.08); color: #ef4444; border: 1px solid rgba(239,68,68,0.2); border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: var(--transition); text-decoration: none; font-family: inherit; }
+        .btn-logout:hover { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.4); }
+
+        .main-content { flex: 1; margin-left: 280px; min-height: 100vh; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; background: rgba(15,36,64,0.6); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.08); position: sticky; top: 0; z-index: 50; }
+        .topbar-left { display: flex; align-items: center; gap: 1rem; }
+        .hamburger { display: none; flex-direction: column; cursor: pointer; padding: 8px; gap: 5px; background: none; border: none; }
+        .hamburger span { width: 25px; height: 2px; background: var(--hijau-muda); border-radius: 2px; transition: var(--transition); }
+        .topbar-title { font-size: 1.3rem; font-weight: 700; color: var(--putih); }
+        .topbar-right { display: flex; align-items: center; gap: 1.5rem; }
+        .notification-bell { font-size: 1.5rem; cursor: pointer; background: none; border: none; color: rgba(255,255,255,0.7); }
+        .user-menu { display: flex; align-items: center; gap: 0.8rem; }
+        .topbar-avatar { width: 38px; height: 38px; background: linear-gradient(135deg, rgba(16,185,129,0.7), rgba(5,150,105,0.7)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--putih); font-size: 0.9rem; border: 2px solid rgba(255,255,255,0.2); overflow: hidden; }
+        .topbar-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .user-menu span { color: var(--putih); font-weight: 600; font-size: 0.9rem; }
+
+        .page-content { padding: 2rem; animation: fadeInUp 0.6s ease; }
+        .breadcrumb { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.35); }
+        .breadcrumb a { color: var(--hijau-muda); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--putih); }
+
+        .header-card { background: rgba(255,255,255,0.03); backdrop-filter: blur(15px); padding: 2rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; }
+        .header-left h1 { font-size: 1.5rem; font-weight: 800; color: var(--putih); }
+        .header-left .tugas-id { font-size: 1rem; color: var(--hijau-muda); font-weight: 700; }
+        .header-meta { display: flex; gap: 1rem; margin-top: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.4); }
+
+        .status-badge-lg { padding: 0.6rem 1.5rem; border-radius: 25px; font-size: 0.9rem; font-weight: 700; white-space: nowrap; backdrop-filter: blur(10px); }
+        .status-MENUNGGU { background: rgba(245,158,11,0.2); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+        .status-DIVERIFIKASI { background: rgba(59,130,246,0.2); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+        .status-DITUGASKAN { background: rgba(139,92,246,0.2); color: #a78bfa; border: 1px solid rgba(139,92,246,0.3); }
+        .status-MENUJU_LOKASI { background: rgba(249,115,22,0.2); color: #fb923c; border: 1px solid rgba(249,115,22,0.3); }
+        .status-DIPROSES { background: rgba(59,130,246,0.2); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); animation: pulseHijau 2s infinite; }
+        .status-SELESAI { background: rgba(16,185,129,0.2); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+        .status-DITOLAK { background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+        .status-KADALUARSA { background: rgba(107,114,128,0.2); color: #9ca3af; border: 1px solid rgba(107,114,128,0.3); }
+
+        .detail-grid { display: grid; grid-template-columns: 1fr 380px; gap: 1.5rem; }
+        .detail-card { background: rgba(255,255,255,0.03); backdrop-filter: blur(15px); padding: 1.8rem; border-radius: 18px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 1.5rem; }
+        .detail-card h3 { font-size: 1.1rem; font-weight: 700; color: var(--putih); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .detail-card h3 .icon { color: var(--hijau-muda); }
+        .detail-card p { color: rgba(255,255,255,0.6); line-height: 1.8; font-size: 0.95rem; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .info-item { padding: 0.8rem; background: rgba(0,0,0,0.15); border-radius: 10px; }
+        .info-label { font-size: 0.7rem; text-transform: uppercase; color: rgba(255,255,255,0.35); letter-spacing: 0.05em; margin-bottom: 0.3rem; }
+        .info-value { color: var(--putih); font-weight: 600; font-size: 0.9rem; }
+
+        .map-wrapper { border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); margin-top: 0.5rem; }
+        #map { width: 100%; height: 400px; z-index: 1; }
+
+        .timeline { position: relative; padding-left: 2rem; }
+        .timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: rgba(255,255,255,0.06); border-radius: 2px; }
+        .timeline-item { position: relative; padding-bottom: 1.5rem; }
+        .timeline-item:last-child { padding-bottom: 0; }
+        .timeline-dot { position: absolute; left: -2rem; top: 4px; width: 18px; height: 18px; border-radius: 50%; background: rgba(15,36,64,0.8); border: 3px solid rgba(255,255,255,0.15); }
+        .timeline-item:first-child .timeline-dot { background: var(--hijau); border-color: var(--hijau); animation: timelinePulse 2s infinite; }
+        .timeline-content { background: rgba(0,0,0,0.1); padding: 0.8rem 1rem; border-radius: 10px; border-left: 3px solid var(--hijau); }
+        .timeline-status { font-weight: 700; font-size: 0.9rem; color: var(--putih); }
+        .timeline-date { font-size: 0.75rem; color: rgba(255,255,255,0.35); margin-top: 0.2rem; }
+        .timeline-note { font-size: 0.85rem; color: rgba(255,255,255,0.5); margin-top: 0.3rem; }
+
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; font-weight: 600; color: rgba(255,255,255,0.7); margin-bottom: 0.5rem; font-size: 0.9rem; }
+        .form-control { width: 100%; padding: 0.8rem 1.2rem; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1); border-radius: 12px; color: var(--putih); font-size: 0.95rem; transition: var(--transition); outline: none; font-family: inherit; }
+        .form-control:focus { border-color: rgba(16,185,129,0.5); box-shadow: 0 0 0 4px rgba(16,185,129,0.05); background: rgba(255,255,255,0.08); }
+        select.form-control { cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem; }
+        select.form-control option { background: #0f2440 !important; color: #ffffff !important; padding: 8px; }
+        select.form-control option:hover, select.form-control option:checked { background: rgba(16,185,129,0.3) !important; }
+        textarea.form-control { resize: vertical; min-height: 80px; }
+
+        .btn-update { width: 100%; padding: 0.85rem; background: linear-gradient(135deg, #10b981, #059669); color: var(--putih); border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: var(--transition); font-family: inherit; }
+        .btn-update:hover { transform: translateY(-2px); box-shadow: var(--shadow-hijau); }
+
+        .dokumentasi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin-top: 0.5rem; }
+        .dokumentasi-item { border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); }
+        .dokumentasi-item img { width: 100%; height: 120px; object-fit: cover; display: block; }
+        .dokumentasi-caption { padding: 0.5rem; font-size: 0.75rem; color: rgba(255,255,255,0.5); text-align: center; background: rgba(0,0,0,0.2); }
+
+        .btn-upload { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.5rem; background: rgba(16,185,129,0.15); color: var(--hijau-muda); border: 1px solid rgba(16,185,129,0.3); border-radius: 10px; font-weight: 600; cursor: pointer; transition: var(--transition); font-family: inherit; font-size: 0.9rem; }
+        .btn-upload:hover { background: rgba(16,185,129,0.25); border-color: var(--hijau); }
+
+        .btn-back-link { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.2rem; background: transparent; color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; font-weight: 600; text-decoration: none; transition: var(--transition); font-size: 0.9rem; }
+        .btn-back-link:hover { background: rgba(255,255,255,0.03); color: var(--putih); }
+
+        .alert { padding: 0.9rem 1rem; border-radius: 10px; margin-bottom: 1.5rem; font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; animation: slideUp 0.4s ease; border-left: 4px solid; }
+        .alert-success { background: rgba(16,185,129,0.1); border-color: #10b981; color: #6ee7b7; }
+        .alert-error { background: rgba(239,68,68,0.1); border-color: #ef4444; color: #fca5a5; }
+
+        .footer { padding: 1.5rem 2rem; text-align: center; color: rgba(255,255,255,0.25); font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.04); background: rgba(0,0,0,0.1); }
+
+        @media (max-width: 1024px) { .sidebar { width: 240px; } .main-content { margin-left: 240px; } .detail-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) {
+            .sidebar { left: -280px; } .sidebar.open { left: 0; } .main-content { margin-left: 0; }
+            .hamburger { display: flex; } .page-content { padding: 1.5rem 1rem; }
+            .user-menu span { display: none; } .header-card { flex-direction: column; align-items: flex-start; }
+            .info-grid { grid-template-columns: 1fr; } #map { height: 250px; }
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo"><a href="{% url 'petugas_dashboard' %}"><span class="logo-icon">🫡</span> <span>LaporWarga</span></a></div>
+        <div class="sidebar-user">
+            <div class="sidebar-avatar">{% if user.foto_profil %}<img src="{{ user.foto_profil.url }}" alt="Foto">{% else %}{{ user.username|slice:":1"|upper }}{% endif %}</div>
+            <div class="sidebar-user-info"><h4>{{ user.username }}</h4><p>🫡 Petugas Lapangan</p></div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="sidebar-nav-label">Menu Utama</div>
+            <a href="{% url 'petugas_dashboard' %}"><span class="nav-icon">📊</span> Dashboard</a>
+            <a href="{% url 'petugas_daftar_tugas' %}" class="active"><span class="nav-icon">📋</span> Daftar Tugas</a>
+            <div class="sidebar-nav-label">Lainnya</div>
+            <a href="{% url 'petugas_profil' %}"><span class="nav-icon">👤</span> Profil Saya</a>
+        </nav>
+        <div class="sidebar-footer"><a href="{% url 'auth_logout' %}" class="btn-logout">🚪 Logout</a></div>
+    </aside>
+
+    <div class="main-content">
+        <div class="topbar">
+            <div class="topbar-left"><button class="hamburger" onclick="toggleSidebar()"><span></span><span></span><span></span></button><span class="topbar-title">📋 Detail Tugas</span></div>
+            <div class="topbar-right"><button class="notification-bell">🔔</button><div class="user-menu"><div class="topbar-avatar">{% if user.foto_profil %}<img src="{{ user.foto_profil.url }}" alt="Foto">{% else %}{{ user.username|slice:":1"|upper }}{% endif %}</div><span>{{ user.username }}</span></div></div>
+        </div>
+
+        <div class="page-content">
+            <div class="breadcrumb">
+                <a href="{% url 'petugas_dashboard' %}">Dashboard</a><span>›</span>
+                <a href="{% url 'petugas_daftar_tugas' %}">Daftar Tugas</a><span>›</span>
+                <span style="color:rgba(255,255,255,0.5);">Tugas #{{ penanganan.id }}</span>
+            </div>
+
+            {% if messages %}
+            {% for message in messages %}<div class="alert alert-{{ message.tags }}">{% if message.tags == 'success' %}✅{% else %}❌{% endif %} {{ message }}</div>{% endfor %}
+            {% endif %}
+
+            <div class="header-card">
+                <div class="header-left"><div class="tugas-id">📋 Tugas #{{ penanganan.id }} — Laporan #{{ laporan.id }}</div><h1>{{ laporan.judul }}</h1><div class="header-meta"><span>📅 Ditugaskan: {{ penanganan.assigned_at|date:"d M Y, H:i" }}</span><span>🕐 {{ penanganan.assigned_at|timesince }} lalu</span></div></div>
+                <span class="status-badge-lg status-{{ laporan.status }}">{{ laporan.get_status_display }}</span>
+            </div>
+
+            <div class="detail-grid">
+                <div>
+                    <div class="detail-card"><h3><span class="icon">📝</span> Deskripsi Masalah</h3><p>{{ laporan.deskripsi|linebreaks }}</p></div>
+                    <div class="detail-card">
+                        <h3><span class="icon">ℹ️</span> Informasi Lokasi</h3>
+                        <div class="info-grid">
+                            <div class="info-item"><div class="info-label">📍 Alamat</div><div class="info-value">{{ laporan.alamat_kejadian|default:"-" }}</div></div>
+                            <div class="info-item"><div class="info-label">🗺️ Koordinat</div><div class="info-value">{{ latitude_float|floatformat:7 }}, {{ longitude_float|floatformat:7 }}</div></div>
+                            <div class="info-item"><div class="info-label">📂 Kategori</div><div class="info-value">{{ laporan.get_kategori_display }}</div></div>
+                            <div class="info-item"><div class="info-label">👤 Pelapor</div><div class="info-value">{{ laporan.pelapor.username }}</div></div>
+                        </div>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3><span class="icon">🗺️</span> Peta Lokasi</h3>
+                        <div class="map-wrapper"><div id="map"></div></div>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3><span class="icon">📸</span> Dokumentasi Penanganan</h3>
+                        {% if dokumentasi_list %}
+                        <div class="dokumentasi-grid">{% for dok in dokumentasi_list %}<div class="dokumentasi-item"><img src="{{ dok.foto.url }}" alt="Dokumentasi">{% if dok.keterangan %}<div class="dokumentasi-caption">{{ dok.keterangan }}</div>{% endif %}</div>{% endfor %}</div>
+                        {% else %}<p style="color:rgba(255,255,255,0.35);text-align:center;padding:1rem;">Belum ada dokumentasi</p>{% endif %}
+                        {% if laporan.status not in 'SELESAI,DITOLAK,KADALUARSA' %}
+                        <form method="POST" action="{% url 'petugas_upload_dokumentasi' penanganan.id %}" enctype="multipart/form-data" style="margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.05);">
+                            {% csrf_token %}
+                            <div class="form-group"><label>📷 Upload Foto</label><input type="file" name="foto" class="form-control" accept="image/*" required></div>
+                            <div class="form-group"><label>📝 Keterangan</label><input type="text" name="keterangan" class="form-control" placeholder="Deskripsi singkat foto..."></div>
+                            <button type="submit" class="btn-upload">📤 Upload Dokumentasi</button>
+                        </form>{% endif %}
+                    </div>
+                </div>
+
+                <div>
+                    {% if next_status %}
+                    <div class="detail-card" style="animation:borderGlowHijau 4s infinite;">
+                        <h3><span class="icon">🔄</span> Update Status</h3>
+                        <form method="POST" action="{% url 'petugas_update_status' penanganan.id %}">
+                            {% csrf_token %}
+                            <div class="form-group"><label>Status Selanjutnya</label><select name="status" class="form-control" required><option value="">-- Pilih Status --</option>{% for status_code, status_label in next_status %}<option value="{{ status_code }}">{{ status_label }}</option>{% endfor %}</select></div>
+                            <div class="form-group"><label>📝 Keterangan (Opsional)</label><textarea name="keterangan" class="form-control" placeholder="Tambahkan catatan..."></textarea></div>
+                            <button type="submit" class="btn-update">✅ Update Status</button>
+                        </form>
+                    </div>{% endif %}
+                    <div class="detail-card">
+                        <h3><span class="icon">📅</span> Riwayat Status</h3>
+                        {% if status_history %}<div class="timeline">{% for history in status_history %}<div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-status">{{ history.get_status_display }}</div><div class="timeline-date">{{ history.changed_at|date:"d M Y, H:i" }}</div>{% if history.keterangan %}<div class="timeline-note">📝 {{ history.keterangan }}</div>{% endif %}</div></div>{% endfor %}</div>
+                        {% else %}<p style="color:rgba(255,255,255,0.35);text-align:center;">Belum ada riwayat</p>{% endif %}
+                    </div>
+                    <div style="text-align:center;"><a href="{% url 'petugas_daftar_tugas' %}" class="btn-back-link">← Kembali ke Daftar Tugas</a></div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer"><p>&copy; <span id="currentYear"></span> LaporWarga - Kecamatan Medan Selayang</p></footer>
+    </div>
+    <div id="sidebarOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:99;" onclick="toggleSidebar()"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        function toggleSidebar(){var s=document.getElementById('sidebar'),o=document.getElementById('sidebarOverlay');s.classList.contains('open')?(s.classList.remove('open'),o.style.display='none'):(s.classList.add('open'),o.style.display='block');}
+
+        // SAMA PERSIS DENGAN ADMIN - Data dari JSON
+        var laporanData = {{ laporan_json|safe }};
+        var lat = laporanData.latitude;
+        var lng = laporanData.longitude;
+
+        var map = L.map('map').setView([lat, lng], 16);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 19
+        }).addTo(map);
+
+        var markerIcon = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+        });
+
+        L.marker([lat, lng], { icon: markerIcon })
+            .addTo(map)
+            .bindPopup('<b>' + laporanData.judul + '</b><br>' + laporanData.alamat)
+            .openPopup();
+
+        setTimeout(function() { map.invalidateSize(); }, 300);
+        window.addEventListener('resize', function() { map.invalidateSize(); });
+    </script>
+</body>
+</html>

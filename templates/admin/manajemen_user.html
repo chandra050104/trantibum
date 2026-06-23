@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen User - LaporWarga</title>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --hitam: #0a0a0a; --hitam-card: #111111; --hitam-abu: #1a1a1a;
+            --cyan: #06b6d4; --cyan-muda: #22d3ee; --cyan-gelap: #0891b2;
+            --orange: #f97316; --orange-muda: #fb923c; --orange-gelap: #ea580c;
+            --putih: #ffffff; --shadow: 0 4px 15px rgba(0,0,0,0.5);
+            --shadow-cyan: 0 8px 30px rgba(6,182,212,0.3);
+            --shadow-orange: 0 8px 30px rgba(249,115,22,0.3);
+            --transition: all 0.3s ease;
+        }
+
+        @keyframes bgShiftAdmin {
+            0% { background: linear-gradient(135deg, #0a0a0a 0%, #111111 100%); }
+            25% { background: linear-gradient(135deg, #0d1a1f 0%, #0a0a0a 100%); }
+            50% { background: linear-gradient(135deg, #111111 0%, #1a1111 100%); }
+            75% { background: linear-gradient(135deg, #0a1518 0%, #0a0a0a 100%); }
+            100% { background: linear-gradient(135deg, #0a0a0a 0%, #111111 100%); }
+        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes float { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
+        @keyframes pulseCyan { 0%,100% { box-shadow: 0 0 0 0 rgba(6,182,212,0.4); } 50% { box-shadow: 0 0 0 12px rgba(6,182,212,0); } }
+        @keyframes shakeX { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6; color: rgba(255,255,255,0.7); min-height: 100vh;
+            animation: bgShiftAdmin 15s infinite; background-size: 400% 400%;
+            transition: background 1s ease; display: flex;
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar { width: 280px; min-height: 100vh; background: rgba(17,17,17,0.75); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border-right: 1px solid rgba(6,182,212,0.15); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; transition: var(--transition); overflow-y: auto; box-shadow: 4px 0 40px rgba(0,0,0,0.5); }
+        .sidebar-logo { padding: 1.8rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.04); background: rgba(0,0,0,0.2); }
+        .sidebar-logo a { font-size: 1.6rem; font-weight: 800; color: var(--putih); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+        .sidebar-logo .logo-icon { font-size: 1.8rem; animation: float 3s ease-in-out infinite; }
+        .sidebar-logo span { background: linear-gradient(135deg, #22d3ee, #06b6d4, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .sidebar-user { padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.04); background: rgba(0,0,0,0.15); display: flex; align-items: center; gap: 1rem; }
+        .sidebar-avatar { width: 50px; height: 50px; background: linear-gradient(135deg, rgba(6,182,212,0.8), rgba(249,115,22,0.8)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.3rem; color: var(--putih); flex-shrink: 0; box-shadow: 0 4px 20px rgba(6,182,212,0.3); border: 2px solid rgba(255,255,255,0.15); overflow: hidden; }
+        .sidebar-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .sidebar-user-info h4 { font-size: 0.95rem; color: var(--putih); font-weight: 700; }
+        .sidebar-user-info p { font-size: 0.8rem; color: var(--cyan-muda); font-weight: 500; }
+        .sidebar-nav { flex: 1; padding: 1.5rem 1rem; }
+        .sidebar-nav-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.15em; color: rgba(255,255,255,0.2); padding: 0 0.8rem; margin-bottom: 0.8rem; margin-top: 1.2rem; }
+        .sidebar-nav-label:first-child { margin-top: 0; }
+        .sidebar-nav a { display: flex; align-items: center; gap: 0.8rem; padding: 0.85rem 1rem; color: rgba(255,255,255,0.45); text-decoration: none; border-radius: 12px; transition: var(--transition); font-weight: 500; font-size: 0.9rem; margin-bottom: 0.25rem; }
+        .sidebar-nav a:hover { background: rgba(6,182,212,0.06); color: var(--putih); }
+        .sidebar-nav a.active { background: rgba(6,182,212,0.15); color: var(--cyan); font-weight: 600; border: 1px solid rgba(6,182,212,0.3); }
+        .sidebar-nav a .nav-icon { font-size: 1.2rem; width: 24px; text-align: center; }
+        .sidebar-footer { padding: 1.5rem; border-top: 1px solid rgba(255,255,255,0.04); background: rgba(0,0,0,0.2); }
+        .btn-logout { display: flex; align-items: center; gap: 0.5rem; width: 100%; padding: 0.75rem 1rem; background: rgba(239,68,68,0.08); color: #ef4444; border: 1px solid rgba(239,68,68,0.2); border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: var(--transition); text-decoration: none; font-family: inherit; }
+        .btn-logout:hover { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.4); }
+
+        /* ========== MAIN ========== */
+        .main-content { flex: 1; margin-left: 280px; min-height: 100vh; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; background: rgba(17,17,17,0.6); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.06); position: sticky; top: 0; z-index: 50; }
+        .topbar-left { display: flex; align-items: center; gap: 1rem; }
+        .hamburger { display: none; flex-direction: column; cursor: pointer; padding: 8px; gap: 5px; background: none; border: none; }
+        .hamburger span { width: 25px; height: 2px; background: var(--cyan); border-radius: 2px; transition: var(--transition); }
+        .topbar-title { font-size: 1.3rem; font-weight: 700; color: var(--putih); }
+        .topbar-right { display: flex; align-items: center; gap: 1.5rem; }
+        .notification-bell { position: relative; cursor: pointer; background: none; border: none; font-size: 1.5rem; padding: 8px 12px; color: rgba(255,255,255,0.6); border-radius: 12px; }
+        .user-menu { display: flex; align-items: center; gap: 0.8rem; }
+        .topbar-avatar { width: 38px; height: 38px; background: linear-gradient(135deg, rgba(6,182,212,0.7), rgba(249,115,22,0.7)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--putih); font-size: 0.9rem; border: 2px solid rgba(255,255,255,0.15); overflow: hidden; }
+        .topbar-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .user-menu span { color: var(--putih); font-weight: 600; font-size: 0.9rem; }
+
+        /* ========== PAGE ========== */
+        .page-content { padding: 2rem; animation: fadeInUp 0.6s ease; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+        .page-header h1 { font-size: 1.8rem; font-weight: 800; color: var(--putih); }
+        .page-header p { color: rgba(255,255,255,0.4); }
+        .btn-add { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.3rem; background: linear-gradient(135deg, #06b6d4, #0891b2); color: white; border: none; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer; text-decoration: none; transition: var(--transition); }
+        .btn-add:hover { box-shadow: var(--shadow-cyan); transform: translateY(-2px); }
+
+        /* ========== FILTER ========== */
+        .filter-toolbar { background: rgba(255,255,255,0.02); backdrop-filter: blur(15px); padding: 1rem 1.5rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+        .filter-group { display: flex; align-items: center; gap: 0.5rem; }
+        .filter-label { font-size: 0.8rem; color: rgba(255,255,255,0.4); font-weight: 600; white-space: nowrap; }
+        .filter-select { padding: 0.45rem 0.8rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 0.8rem; cursor: pointer; font-family: inherit; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.6rem center; padding-right: 2rem; }
+        .filter-select option { background: #1a1a1a !important; color: #ffffff !important; }
+        .filter-select:focus { border-color: var(--cyan); outline: none; }
+        .search-input { flex: 1; min-width: 200px; padding: 0.5rem 1rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 0.85rem; font-family: inherit; }
+        .search-input:focus { border-color: var(--cyan); outline: none; }
+        .search-input::placeholder { color: rgba(255,255,255,0.3); }
+        .btn-filter { padding: 0.5rem 1.2rem; background: rgba(6,182,212,0.15); color: var(--cyan); border: 1px solid rgba(6,182,212,0.3); border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: var(--transition); white-space: nowrap; }
+        .btn-filter:hover { background: rgba(6,182,212,0.25); }
+        .btn-reset { padding: 0.5rem 1rem; background: transparent; color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; cursor: pointer; font-size: 0.85rem; text-decoration: none; transition: var(--transition); }
+        .btn-reset:hover { background: rgba(255,255,255,0.03); color: white; }
+        .result-count { font-size: 0.8rem; color: rgba(255,255,255,0.3); white-space: nowrap; }
+
+        /* ========== TABLE ========== */
+        .table-card { background: rgba(255,255,255,0.02); backdrop-filter: blur(15px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; }
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        table thead { background: rgba(0,0,0,0.3); }
+        table th { padding: 0.9rem 1rem; text-align: left; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(255,255,255,0.35); font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        table td { padding: 0.8rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.02); font-size: 0.85rem; vertical-align: middle; }
+        table tbody tr { transition: var(--transition); }
+        table tbody tr:hover { background: rgba(6,182,212,0.03); }
+        .td-username { font-weight: 600; color: var(--putih); }
+        .td-email { color: rgba(255,255,255,0.4); font-size: 0.8rem; }
+
+        .role-badge { display: inline-block; padding: 0.25rem 0.7rem; border-radius: 15px; font-size: 0.7rem; font-weight: 700; white-space: nowrap; }
+        .role-ADMIN { background: rgba(249,115,22,0.2); color: var(--orange-muda); border: 1px solid rgba(249,115,22,0.3); }
+        .role-PETUGAS { background: rgba(16,185,129,0.2); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+        .role-MASYARAKAT { background: rgba(6,182,212,0.2); color: var(--cyan-muda); border: 1px solid rgba(6,182,212,0.3); }
+
+        .btn-action { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.35rem 0.7rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: var(--transition); text-decoration: none; white-space: nowrap; margin-right: 0.3rem; }
+        .btn-edit { background: rgba(6,182,212,0.15); color: var(--cyan-muda); border: 1px solid rgba(6,182,212,0.3); }
+        .btn-edit:hover { background: rgba(6,182,212,0.25); }
+        .btn-delete { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+        .btn-delete:hover { background: rgba(239,68,68,0.25); }
+
+        /* ========== DELETE MODAL ========== */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 200; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-overlay.show { display: flex; }
+        .modal { background: rgba(26,26,26,0.95); backdrop-filter: blur(30px); border: 1px solid rgba(239,68,68,0.3); border-radius: 20px; padding: 2rem; max-width: 450px; width: 90%; animation: fadeInUp 0.3s ease; box-shadow: 0 25px 60px rgba(0,0,0,0.7); text-align: center; }
+        .modal .warning-icon { font-size: 3rem; margin-bottom: 1rem; animation: pulseCyan 2s infinite; }
+        .modal h2 { font-size: 1.3rem; font-weight: 800; color: var(--putih); margin-bottom: 0.5rem; }
+        .modal p { color: rgba(255,255,255,0.5); font-size: 0.9rem; margin-bottom: 1.5rem; }
+        .modal .user-name { color: #f87171; font-weight: 700; }
+        .modal-actions { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; }
+        .btn-cancel { padding: 0.7rem 1.5rem; background: transparent; color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 0.9rem; transition: var(--transition); font-family: inherit; }
+        .btn-cancel:hover { background: rgba(255,255,255,0.05); color: white; }
+        .btn-delete-confirm { padding: 0.7rem 1.5rem; background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 0.9rem; transition: var(--transition); font-family: inherit; text-decoration: none; }
+        .btn-delete-confirm:hover { box-shadow: 0 8px 25px rgba(239,68,68,0.4); transform: translateY(-2px); }
+
+        .alert { padding: 0.9rem 1rem; border-radius: 10px; margin-bottom: 1.5rem; font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; animation: slideUp 0.4s ease; border-left: 4px solid; }
+        .alert-success { background: rgba(16,185,129,0.1); border-color: #10b981; color: #6ee7b7; }
+        .alert-error { background: rgba(239,68,68,0.1); border-color: #ef4444; color: #fca5a5; animation: slideUp 0.4s ease, shakeX 0.5s ease 0.4s; }
+
+        .empty-state { text-align: center; padding: 4rem 2rem; color: rgba(255,255,255,0.3); }
+        .empty-icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.4; }
+        .empty-state h3 { color: var(--putih); margin-bottom: 0.5rem; }
+
+        .footer { padding: 1.5rem 2rem; text-align: center; color: rgba(255,255,255,0.15); font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.04); background: rgba(0,0,0,0.15); }
+
+        @media (max-width: 1024px) { .sidebar { width: 240px; } .main-content { margin-left: 240px; } }
+        @media (max-width: 768px) {
+            .sidebar { left: -280px; } .sidebar.open { left: 0; } .main-content { margin-left: 0; }
+            .hamburger { display: flex; } .page-content { padding: 1.5rem 1rem; }
+            .user-menu span { display: none; } .filter-toolbar { flex-direction: column; }
+            .page-header { flex-direction: column; align-items: flex-start; }
+        }
+        @media (max-width: 480px) { .page-header h1 { font-size: 1.4rem; } }
+
+        /* ========== RESPONSIVE TABLE ========== */
+        @media (max-width: 768px) {
+            /* Sembunyikan kolom Email & Telepon */
+            table th:nth-child(2),
+            table td:nth-child(2),
+            table th:nth-child(4),
+            table td:nth-child(4) {
+                display: none;
+            }
+            
+            /* Perkecil padding */
+            table th, table td {
+                padding: 0.5rem 0.4rem;
+                font-size: 0.75rem;
+            }
+            
+            .td-username {
+                font-size: 0.8rem;
+            }
+            
+            .role-badge {
+                padding: 0.2rem 0.5rem;
+                font-size: 0.65rem;
+            }
+            
+            .btn-action {
+                padding: 0.3rem 0.5rem;
+                font-size: 0.68rem;
+                margin-right: 0.15rem;
+            }
+            
+            .btn-add {
+                padding: 0.5rem 1rem;
+                font-size: 0.78rem;
+            }
+            
+            .filter-toolbar form {
+                flex-direction: column;
+            }
+            
+            .search-input {
+                min-width: 100%;
+            }
+            
+            .filter-group {
+                width: 100%;
+            }
+            
+            .filter-select {
+                flex: 1;
+            }
+            
+            .modal {
+                max-width: 95%;
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* Sembunyikan juga kolom Bergabung */
+            table th:nth-child(5),
+            table td:nth-child(5) {
+                display: none;
+            }
+            
+            /* AKSI TETAP TERLIHAT */
+            table th:nth-child(6),
+            table td:nth-child(6) {
+                display: table-cell !important;
+            }
+            
+            .page-header h1 {
+                font-size: 1.3rem;
+            }
+            
+            .page-content {
+                padding: 1rem 0.5rem;
+            }
+            
+            .filter-toolbar {
+                padding: 0.8rem 1rem;
+            }
+            
+            .btn-add {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo"><a href="{% url 'admin_dashboard' %}"><span class="logo-icon">💎</span> <span>LaporWarga</span></a></div>
+        <div class="sidebar-user">
+            <div class="sidebar-avatar">
+                {% if user.foto_profil %}<img src="{{ user.foto_profil.url }}" alt="Foto">{% else %}{{ user.username|slice:":1"|upper }}{% endif %}
+            </div>
+            <div class="sidebar-user-info"><h4>{{ user.username }}</h4><p>💎 Administrator</p></div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="sidebar-nav-label">Menu Utama</div>
+            <a href="{% url 'admin_dashboard' %}"><span class="nav-icon">📊</span> Dashboard</a>
+            <a href="{% url 'admin_semua_laporan' %}"><span class="nav-icon">📋</span> Semua Laporan</a>
+            <a href="{% url 'admin_monitoring_peta' %}"><span class="nav-icon">🗺️</span> Monitoring Peta</a>
+            <a href="{% url 'admin_manajemen_user' %}" class="active"><span class="nav-icon">👥</span> Manajemen User</a>
+            <a href="{% url 'admin_log_aktivitas' %}"><span class="nav-icon">📜</span> Log Aktivitas</a>
+            <div class="sidebar-nav-label">Lainnya</div>
+            {% comment %} <a href="{% url 'public_landing' %}"><span class="nav-icon">🏠</span> Beranda</a> {% endcomment %}
+            <a href="{% url 'admin_profil' %}"><span class="nav-icon">👤</span> Profil Saya</a>
+        </nav>
+        <div class="sidebar-footer"><a href="{% url 'auth_logout' %}" class="btn-logout">🚪 Logout</a></div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main-content">
+        <div class="topbar">
+            <div class="topbar-left"><button class="hamburger" onclick="toggleSidebar()"><span></span><span></span><span></span></button><span class="topbar-title">👥 Manajemen User</span></div>
+            <div class="topbar-right"><button class="notification-bell">🔔</button><div class="user-menu"><div class="topbar-avatar">{% if user.foto_profil %}<img src="{{ user.foto_profil.url }}" alt="Foto">{% else %}{{ user.username|slice:":1"|upper }}{% endif %}</div><span>{{ user.username }}</span></div></div>
+        </div>
+
+        <div class="page-content">
+            <div class="page-header">
+                <div><h1>👥 Manajemen User</h1><p>Kelola semua akun pengguna sistem</p></div>
+                <a href="{% url 'admin_form_user_tambah' %}" class="btn-add">➕ Tambah User</a>
+            </div>
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{% if message.tags == 'success' %}✅{% else %}❌{% endif %} {{ message }}</div>
+            {% endfor %}
+            {% endif %}
+
+            <!-- Filter -->
+            <div class="filter-toolbar">
+                <form method="GET" style="display:flex;flex-wrap:wrap;gap:1rem;width:100%;align-items:center;">
+                    <div class="filter-group">
+                        <span class="filter-label">Role:</span>
+                        <select name="role" class="filter-select" onchange="this.form.submit()">
+                            <option value="">Semua Role</option>
+                            {% for rc, rl in role_choices %}
+                            <option value="{{ rc }}" {% if role_filter == rc %}selected{% endif %}>{{ rl }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <input type="text" name="search" class="search-input" placeholder="🔍 Cari username atau email..." value="{{ search }}">
+                    <button type="submit" class="btn-filter">🔍 Filter</button>
+                    <a href="{% url 'admin_manajemen_user' %}" class="btn-reset">🔄 Reset</a>
+                    <span class="result-count">{{ user_list.count }} user</span>
+                </form>
+            </div>
+
+            <!-- Table -->
+            <div class="table-card">
+                {% if user_list %}
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Jabatan</th>
+                                <th>Telepon</th>
+                                <th>Bergabung</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for u in user_list %}
+                            <tr>
+                                <td class="td-username">@{{ u.username }}</td>
+                                <td class="td-email">{{ u.email|default:"-" }}</td>
+                                <td><span class="role-badge role-{{ u.role }}">{{ u.get_role_display }}</span></td>
+                                <td>{{ u.get_jabatan_display|default:"-" }}</td>
+                                <td>{{ u.phone|default:"-" }}</td>
+                                <td>{{ u.date_joined|date:"d/m/Y" }}</td>
+                                <td>
+                                    <a href="{% url 'admin_form_user_edit' u.id %}" class="btn-action btn-edit">✏️ Edit</a>
+                                    {% if u.id != user.id %}
+                                    <button class="btn-action btn-delete" onclick="openDeleteModal({{ u.id }}, '{{ u.username|escapejs }}')">🗑️</button>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="empty-state"><div class="empty-icon">👥</div><h3>Tidak Ada User</h3><p>Coba ubah filter atau kata kunci pencarian</p></div>
+                {% endif %}
+            </div>
+        </div>
+        <footer class="footer"><p>&copy; <span id="currentYear"></span> LaporWarga - Kecamatan Medan Selayang · Panel Administrator</p></footer>
+    </div>
+
+    <!-- DELETE CONFIRMATION MODAL -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal">
+            <div class="warning-icon">⚠️</div>
+            <h2>Konfirmasi Hapus</h2>
+            <p>Apakah Anda yakin ingin menghapus user <span class="user-name" id="deleteUserName"></span>?</p>
+            <p style="font-size:0.8rem;color:rgba(255,255,255,0.3);">Tindakan ini tidak dapat dibatalkan.</p>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeModal('deleteModal')">Batal</button>
+                <a href="#" class="btn-delete-confirm" id="deleteConfirmBtn">🗑️ Hapus</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="sidebarOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:99;" onclick="toggleSidebar()"></div>
+
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        function toggleSidebar(){const s=document.getElementById('sidebar'),o=document.getElementById('sidebarOverlay');s.classList.contains('open')?(s.classList.remove('open'),o.style.display='none'):(s.classList.add('open'),o.style.display='block');}
+        
+        function openModal(id){document.getElementById(id).classList.add('show');document.body.style.overflow='hidden';}
+        function closeModal(id){document.getElementById(id).classList.remove('show');document.body.style.overflow='';}
+        
+        function openDeleteModal(userId, username){
+            document.getElementById('deleteUserName').textContent = '@'+username;
+            document.getElementById('deleteConfirmBtn').href = "{% url 'admin_hapus_user' 0 %}".replace('0', userId);
+            openModal('deleteModal');
+        }
+
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e){ if(e.target === this) closeModal(this.id); });
+        });
+
+        // Auto-hide alerts
+        setTimeout(() => {
+            document.querySelectorAll('.alert').forEach(alert => {
+                alert.style.transition = 'all 0.5s ease';
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateY(-10px)';
+                setTimeout(() => { if(alert.parentElement) alert.remove(); }, 500);
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

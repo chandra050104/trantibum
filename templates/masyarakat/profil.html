@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Saya - LaporWarga</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --hitam: #1a1a1a;
+            --hitam-abu: #2d2d2d;
+            --hitam-card: #252525;
+            --hitam-muda: #333333;
+            --putih: #ffffff;
+            --putih-abu: #f5f5f5;
+            --putih-gelap: #e0e0e0;
+            --emas: #d4a853;
+            --emas-muda: #e0c378;
+            --emas-gelap: #b8963d;
+            --shadow: 0 4px 15px rgba(0,0,0,0.4);
+            --shadow-emas: 0 8px 30px rgba(212,168,83,0.25);
+            --transition: all 0.3s ease;
+        }
+
+        @keyframes bgShift {
+            0% { background-color: #1a1a1a; }
+            25% { background-color: #252525; }
+            50% { background-color: #2d2416; }
+            75% { background-color: #1e1e1e; }
+            100% { background-color: #1a1a1a; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulseEmas {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(212,168,83,0.4); }
+            50% { box-shadow: 0 0 0 15px rgba(212,168,83,0); }
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { border-color: rgba(212,168,83,0.2); }
+            50% { border-color: rgba(212,168,83,0.6); }
+        }
+
+        @keyframes avatarGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(212,168,83,0.3); }
+            50% { box-shadow: 0 0 40px rgba(212,168,83,0.6); }
+        }
+
+        @keyframes checkBounce {
+            0% { transform: scale(0); }
+            60% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shakeX {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-6px); }
+            40% { transform: translateX(6px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--putih-abu);
+            min-height: 100vh;
+            animation: bgShift 20s infinite;
+            transition: background-color 2s ease;
+            display: flex;
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            width: 280px;
+            min-height: 100vh;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(212, 168, 83, 0.2);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 100;
+            transition: var(--transition);
+            overflow-y: auto;
+        }
+
+        .sidebar-logo {
+            padding: 1.8rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .sidebar-logo a {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--putih);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar-logo span {
+            background: linear-gradient(135deg, #d4a853, #e0c378, #f5d78a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sidebar-user {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .sidebar-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #d4a853, #b8963d);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: var(--hitam);
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(212,168,83,0.4);
+        }
+
+        .sidebar-user-info h4 { font-size: 0.95rem; color: var(--putih); font-weight: 700; }
+        .sidebar-user-info p { font-size: 0.8rem; color: var(--emas); font-weight: 500; }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 1.5rem 1rem;
+        }
+
+        .sidebar-nav-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #666;
+            padding: 0 0.8rem;
+            margin-bottom: 0.8rem;
+            margin-top: 1rem;
+        }
+        .sidebar-nav-label:first-child { margin-top: 0; }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 1rem;
+            color: #999;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: var(--transition);
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .sidebar-nav a:hover {
+            background: rgba(212, 168, 83, 0.08);
+            color: var(--putih);
+        }
+
+        .sidebar-nav a.active {
+            background: rgba(212, 168, 83, 0.15);
+            color: var(--emas);
+            font-weight: 600;
+            border: 1px solid rgba(212, 168, 83, 0.3);
+        }
+
+        .sidebar-nav a .nav-icon { font-size: 1.2rem; width: 24px; text-align: center; }
+
+        .sidebar-footer {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .btn-logout {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.7rem 1rem;
+            background: transparent;
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            text-decoration: none;
+            font-family: inherit;
+        }
+        .btn-logout:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #ef4444;
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .topbar-left { display: flex; align-items: center; gap: 1rem; }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 8px;
+            gap: 5px;
+            background: none;
+            border: none;
+        }
+        .hamburger span {
+            width: 25px;
+            height: 2px;
+            background: var(--emas);
+            border-radius: 2px;
+            transition: var(--transition);
+        }
+
+        .topbar-title { font-size: 1.3rem; font-weight: 700; color: var(--putih); }
+
+        .topbar-right { display: flex; align-items: center; gap: 1.5rem; }
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            padding: 8px;
+            color: var(--putih-gelap);
+        }
+
+        .user-menu { display: flex; align-items: center; gap: 0.8rem; }
+        .topbar-avatar {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #d4a853, #b8963d);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--hitam);
+            font-size: 0.9rem;
+        }
+        .user-menu span { color: var(--putih); font-weight: 600; font-size: 0.9rem; }
+
+        /* ========== PAGE CONTENT ========== */
+        .page-content {
+            padding: 2rem;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--putih);
+            margin-bottom: 0.3rem;
+        }
+
+        .page-header p {
+            color: #999;
+        }
+
+        /* ========== PROFILE LAYOUT ========== */
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 1.5rem;
+            max-width: 1000px;
+        }
+
+        /* ========== PROFILE SIDEBAR CARD ========== */
+        .profile-sidebar {
+            background: rgba(37, 37, 37, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            text-align: center;
+            height: fit-content;
+            animation: borderGlow 4s infinite;
+        }
+
+        .profile-avatar-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-avatar-large {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--hitam);
+            margin: 0 auto;
+            overflow: hidden;
+            border: 4px solid var(--emas);
+            animation: avatarGlow 3s infinite;
+        }
+
+        .profile-avatar-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-upload-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #d4a853, #b8963d);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1rem;
+            border: 3px solid var(--hitam-card);
+            transition: var(--transition);
+        }
+
+        .avatar-upload-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .profile-sidebar h2 {
+            font-size: 1.3rem;
+            color: var(--putih);
+            margin-bottom: 0.2rem;
+        }
+
+        .profile-role {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            background: rgba(212, 168, 83, 0.15);
+            color: var(--emas);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid rgba(212, 168, 83, 0.3);
+            margin-bottom: 1rem;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            padding: 1rem 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            margin: 1rem 0;
+        }
+
+        .profile-stat {
+            text-align: center;
+        }
+
+        .profile-stat .stat-val {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--emas);
+        }
+
+        .profile-stat .stat-lbl {
+            font-size: 0.7rem;
+            color: #777;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .profile-since {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        /* ========== FORM CARD ========== */
+        .form-card {
+            background: rgba(37, 37, 37, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .form-card h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--putih);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .form-card h3 .icon {
+            color: var(--emas);
+        }
+
+        .form-group {
+            margin-bottom: 1.3rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #ccc;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.85rem 1.2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--putih);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            outline: none;
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            border-color: rgba(212, 168, 83, 0.5);
+            box-shadow: 0 0 0 4px rgba(212, 168, 83, 0.05);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-control::placeholder {
+            color: #555;
+        }
+
+        .form-control:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-hint {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.3rem;
+        }
+
+        /* ========== BUTTONS ========== */
+        .btn-save {
+            padding: 0.85rem 2rem;
+            background: linear-gradient(135deg, #d4a853, #b8963d);
+            color: var(--hitam);
+            border: none;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-emas);
+        }
+
+        .btn-save:active {
+            transform: translateY(0);
+        }
+
+        .btn-reset {
+            padding: 0.85rem 1.5rem;
+            background: transparent;
+            color: #999;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .btn-reset:hover {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: var(--putih);
+        }
+
+        .btn-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* ========== ALERT ========== */
+        .alert {
+            padding: 0.9rem 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            animation: slideUp 0.4s ease;
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: #10b981;
+            color: #6ee7b7;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #ef4444;
+            color: #fca5a5;
+            animation: slideUp 0.4s ease, shakeX 0.5s ease 0.4s;
+        }
+
+        /* ========== SUCCESS TOAST ========== */
+        .success-animation {
+            display: none;
+            text-align: center;
+            padding: 0.5rem;
+        }
+
+        .success-animation.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .checkmark-circle {
+            width: 60px;
+            height: 60px;
+            background: #10b981;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            animation: checkBounce 0.6s ease;
+        }
+
+        /* ========== FOOTER ========== */
+        .footer {
+            padding: 1.5rem 2rem;
+            text-align: center;
+            color: #555;
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            margin-top: 2rem;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 1024px) {
+            .sidebar { width: 240px; }
+            .main-content { margin-left: 240px; }
+            .profile-grid { grid-template-columns: 250px 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { left: -280px; }
+            .sidebar.open { left: 0; }
+            .main-content { margin-left: 0; }
+            .hamburger { display: flex; }
+            .page-content { padding: 1.5rem 1rem; }
+            .user-menu span { display: none; }
+            .profile-grid { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            .profile-sidebar { max-width: 400px; margin: 0 auto; }
+        }
+
+        @media (max-width: 480px) {
+            .page-header h1 { font-size: 1.4rem; }
+            .profile-avatar-large { width: 110px; height: 110px; font-size: 3rem; }
+            .btn-actions { flex-direction: column; }
+            .btn-save, .btn-reset { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <a href="{% url 'masyarakat_dashboard' %}">
+                👑 <span>LaporWarga</span>
+            </a>
+        </div>
+
+        <div class="sidebar-user">
+            <div class="sidebar-avatar">
+                {% if user.foto_profil %}
+                    <img src="{{ user.foto_profil.url }}" alt="Foto Profil" style="width:50px;height:50px;border-radius:50%;object-fit:cover;">
+                {% else %}
+                    {{ user.username|slice:":1"|upper }}
+                {% endif %}
+            </div>
+            <div class="sidebar-user-info">
+                <h4>{{ user.username }}</h4>
+                <p>👤 Masyarakat</p>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="sidebar-nav-label">Menu Utama</div>
+            <a href="{% url 'masyarakat_dashboard' %}">
+                <span class="nav-icon">📊</span> Dashboard
+            </a>
+            <a href="{% url 'masyarakat_riwayat_laporan' %}">
+                <span class="nav-icon">📋</span> Riwayat Laporan
+            </a>
+            <a href="{% url 'public_buat_laporan' %}">
+                <span class="nav-icon">📝</span> Buat Laporan
+            </a>
+            <a href="{% url 'public_tracking' %}">
+                <span class="nav-icon">🔍</span> Tracking
+            </a>
+
+            <div class="sidebar-nav-label">Lainnya</div>
+            <a href="{% url 'public_landing' %}">
+                <span class="nav-icon">🏠</span> Beranda
+            </a>
+            <a href="{% url 'public_info' %}">
+                <span class="nav-icon">ℹ️</span> Info
+            </a>
+            <a href="{% url 'masyarakat_profil' %}" class="active">
+                <span class="nav-icon">👤</span> Profil Saya
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="{% url 'auth_logout' %}" class="btn-logout">🚪 Logout</a>
+        </div>
+    </aside>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <div class="main-content">
+        <div class="topbar">
+            <div class="topbar-left">
+                <button class="hamburger" onclick="toggleSidebar()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <span class="topbar-title">👤 Profil Saya</span>
+            </div>
+            <div class="topbar-right">
+                <button class="notification-bell">🔔</button>
+                <div class="user-menu">
+                    <div class="topbar-avatar">
+                        {% if user.foto_profil %}
+                            <img src="{{ user.foto_profil.url }}" alt="Foto Profil" style="width:38px;height:38px;border-radius:50%;object-fit:cover;">
+                        {% else %}
+                            {{ user.username|slice:":1"|upper }}
+                        {% endif %}
+                    </div>
+                    <span>{{ user.username }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <div class="page-header">
+                <h1>👤 Profil Saya</h1>
+                <p>Kelola informasi profil akun Anda</p>
+            </div>
+
+            <!-- Messages -->
+            {% if messages %}
+            <div style="margin-bottom: 1.5rem; max-width: 1000px;">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {% if message.tags == 'success' %}✅
+                    {% elif message.tags == 'error' %}❌
+                    {% endif %}
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="profile-grid">
+                <!-- Profile Sidebar -->
+                <div class="profile-sidebar">
+                    <div class="profile-avatar-wrapper">
+                        <div class="profile-avatar-large" id="avatarPreview">
+                            {% if user.foto_profil %}
+                            <img src="{{ user.foto_profil.url }}" alt="Foto Profil">
+                            {% else %}
+                            {{ user.username|slice:":1"|upper }}
+                            {% endif %}
+                        </div>
+                        <label class="avatar-upload-btn" for="foto_profil" title="Ubah foto profil">
+                            📷
+                        </label>
+                    </div>
+
+                    <h2>{{ user.username }}</h2>
+                    <span class="profile-role">👤 Masyarakat</span>
+
+                    <div class="profile-stats">
+                        <div class="profile-stat">
+                            <div class="stat-val">{{ user.laporan.count }}</div>
+                            <div class="stat-lbl">Laporan</div>
+                        </div>
+                        <div class="profile-stat">
+                            <div class="stat-val">{{ user.email|yesno:"✓, -" }}</div>
+                            <div class="stat-lbl">Email</div>
+                        </div>
+                    </div>
+
+                    <div class="profile-since">
+                        🗓️ Bergabung sejak {{ user.date_joined|date:"d M Y" }}
+                    </div>
+                </div>
+
+                <!-- Form Card -->
+                <div class="form-card">
+                    <h3><span class="icon">📝</span> Edit Informasi</h3>
+
+                    <form method="POST" enctype="multipart/form-data" id="profileForm">
+                        {% csrf_token %}
+                        
+                        <!-- Foto (hidden input) -->
+                        <input type="file" id="foto_profil" name="foto_profil" accept="image/*" style="display: none;" onchange="previewAvatar(event)">
+
+                        <!-- Username (readonly) -->
+                        <div class="form-group">
+                            <label>👤 Username</label>
+                            <input type="text" class="form-control" value="{{ user.username }}" disabled>
+                            <div class="form-hint">Username tidak dapat diubah</div>
+                        </div>
+
+                        <!-- Email (readonly) -->
+                        <div class="form-group">
+                            <label>📧 Email</label>
+                            <input type="email" class="form-control" value="{{ user.email|default:'Belum diisi' }}" disabled>
+                            <div class="form-hint">Email tidak dapat diubah sendiri. Hubungi admin untuk perubahan.</div>
+                        </div>
+
+                        <div class="form-row">
+                            <!-- Phone -->
+                            <div class="form-group">
+                                <label for="phone">📱 Nomor Telepon</label>
+                                <input 
+                                    type="tel" 
+                                    id="phone" 
+                                    name="phone" 
+                                    class="form-control" 
+                                    placeholder="Contoh: 08123456789"
+                                    value="{{ user.phone|default:'' }}"
+                                >
+                            </div>
+
+                            <!-- Role (readonly) -->
+                            <div class="form-group">
+                                <label>🔰 Role</label>
+                                <input type="text" class="form-control" value="{{ user.get_role_display }}" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Alamat -->
+                        <div class="form-group">
+                            <label for="alamat">📍 Alamat</label>
+                            <textarea 
+                                id="alamat" 
+                                name="alamat" 
+                                class="form-control" 
+                                placeholder="Masukkan alamat lengkap Anda"
+                                rows="3"
+                            >{{ user.alamat|default:'' }}</textarea>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="btn-actions">
+                            <button type="submit" class="btn-save">
+                                💾 Simpan Perubahan
+                            </button>
+                            <button type="reset" class="btn-reset" onclick="resetForm()">
+                                🔄 Reset
+                            </button>
+                        </div>
+
+                        <!-- Success Animation -->
+                        <div class="success-animation" id="successAnim">
+                            <div class="checkmark-circle">✓</div>
+                            <p style="color: #34d399; margin-top: 0.5rem; font-weight: 600;">Profil berhasil diperbarui!</p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>&copy; <span id="currentYear"></span> LaporWarga - Kecamatan Medan Selayang. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <div id="sidebarOverlay" style="display: none; position: fixed; top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:99;" onclick="toggleSidebar()"></div>
+
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+                overlay.style.display = 'none';
+            } else {
+                sidebar.classList.add('open');
+                overlay.style.display = 'block';
+            }
+        }
+
+        // Preview avatar
+        function previewAvatar(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('avatarPreview');
+                    preview.innerHTML = '<img src="' + e.target.result + '" alt="Preview">';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Reset form
+        function resetForm() {
+            document.getElementById('phone').value = '{{ user.phone|default:'' }}';
+            document.getElementById('alamat').value = '{{ user.alamat|default:'' }}';
+            
+            // Reset avatar preview
+            const preview = document.getElementById('avatarPreview');
+            {% if user.foto_profil %}
+            preview.innerHTML = '<img src="{{ user.foto_profil.url }}" alt="Foto Profil">';
+            {% else %}
+            preview.innerHTML = '{{ user.username|slice:":1"|upper }}';
+            {% endif %}
+        }
+
+        // Show success animation
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                document.getElementById('successAnim').classList.add('show');
+                setTimeout(() => {
+                    document.getElementById('successAnim').classList.remove('show');
+                }, 3000);
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        // Form validation
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            const phone = document.getElementById('phone').value.trim();
+            
+            // Optional: phone validation
+            if (phone && !/^[0-9+\-\s]{8,15}$/.test(phone)) {
+                e.preventDefault();
+                alert('⚠️ Format nomor telepon tidak valid! Gunakan 8-15 digit angka.');
+                return false;
+            }
+        });
+
+        // Auto-hide alerts
+        setTimeout(() => {
+            document.querySelectorAll('.alert').forEach(alert => {
+                alert.style.transition = 'all 0.5s ease';
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    if (alert.parentElement) alert.remove();
+                }, 500);
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

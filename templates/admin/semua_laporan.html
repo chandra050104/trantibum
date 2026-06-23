@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semua Laporan - LaporWarga</title>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --hitam: #0a0a0a; --hitam-card: #111111; --hitam-abu: #1a1a1a;
+            --cyan: #06b6d4; --cyan-muda: #22d3ee; --cyan-gelap: #0891b2;
+            --orange: #f97316; --orange-muda: #fb923c; --orange-gelap: #ea580c;
+            --putih: #ffffff; --shadow: 0 4px 15px rgba(0,0,0,0.5);
+            --shadow-cyan: 0 8px 30px rgba(6,182,212,0.3);
+            --transition: all 0.3s ease;
+        }
+
+        @keyframes bgShiftAdmin {
+            0% { background: linear-gradient(135deg, #0a0a0a 0%, #111111 100%); }
+            25% { background: linear-gradient(135deg, #0d1a1f 0%, #0a0a0a 100%); }
+            50% { background: linear-gradient(135deg, #111111 0%, #1a1111 100%); }
+            75% { background: linear-gradient(135deg, #0a1518 0%, #0a0a0a 100%); }
+            100% { background: linear-gradient(135deg, #0a0a0a 0%, #111111 100%); }
+        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulseCyan { 0%,100% { box-shadow: 0 0 0 0 rgba(6,182,212,0.4); } 50% { box-shadow: 0 0 0 12px rgba(6,182,212,0); } }
+        @keyframes float { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
+        @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.9) translateY(-20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6; color: rgba(255,255,255,0.7); min-height: 100vh;
+            animation: bgShiftAdmin 15s infinite; background-size: 400% 400%;
+            transition: background 1s ease; display: flex;
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar { width: 280px; min-height: 100vh; background: rgba(17,17,17,0.75); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border-right: 1px solid rgba(6,182,212,0.15); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; transition: var(--transition); overflow-y: auto; box-shadow: 4px 0 40px rgba(0,0,0,0.5); }
+        .sidebar-logo { padding: 1.8rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.04); background: rgba(0,0,0,0.2); }
+        .sidebar-logo a { font-size: 1.6rem; font-weight: 800; color: var(--putih); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+        .sidebar-logo .logo-icon { font-size: 1.8rem; animation: float 3s ease-in-out infinite; }
+        .sidebar-logo span { background: linear-gradient(135deg, #22d3ee, #06b6d4, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .sidebar-user { padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.04); background: rgba(0,0,0,0.15); display: flex; align-items: center; gap: 1rem; }
+        .sidebar-avatar { width: 50px; height: 50px; background: linear-gradient(135deg, rgba(6,182,212,0.8), rgba(249,115,22,0.8)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.3rem; color: var(--putih); flex-shrink: 0; box-shadow: 0 4px 20px rgba(6,182,212,0.3); border: 2px solid rgba(255,255,255,0.15); overflow: hidden; }
+        .sidebar-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .sidebar-user-info h4 { font-size: 0.95rem; color: var(--putih); font-weight: 700; }
+        .sidebar-user-info p { font-size: 0.8rem; color: var(--cyan-muda); font-weight: 500; }
+        .sidebar-nav { flex: 1; padding: 1.5rem 1rem; }
+        .sidebar-nav-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.15em; color: rgba(255,255,255,0.2); padding: 0 0.8rem; margin-bottom: 0.8rem; margin-top: 1.2rem; }
+        .sidebar-nav-label:first-child { margin-top: 0; }
+        .sidebar-nav a { display: flex; align-items: center; gap: 0.8rem; padding: 0.85rem 1rem; color: rgba(255,255,255,0.45); text-decoration: none; border-radius: 12px; transition: var(--transition); font-weight: 500; font-size: 0.9rem; margin-bottom: 0.25rem; }
+        .sidebar-nav a:hover { background: rgba(6,182,212,0.06); color: var(--putih); }
+        .sidebar-nav a.active { background: rgba(6,182,212,0.15); color: var(--cyan); font-weight: 600; border: 1px solid rgba(6,182,212,0.3); }
+        .sidebar-nav a .nav-icon { font-size: 1.2rem; width: 24px; text-align: center; }
+        .sidebar-footer { padding: 1.5rem; border-top: 1px solid rgba(255,255,255,0.04); background: rgba(0,0,0,0.2); }
+        .btn-logout { display: flex; align-items: center; gap: 0.5rem; width: 100%; padding: 0.75rem 1rem; background: rgba(239,68,68,0.08); color: #ef4444; border: 1px solid rgba(239,68,68,0.2); border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: var(--transition); text-decoration: none; font-family: inherit; }
+        .btn-logout:hover { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.4); }
+
+        /* ========== MAIN ========== */
+        .main-content { flex: 1; margin-left: 280px; min-height: 100vh; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; background: rgba(17,17,17,0.6); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.06); position: sticky; top: 0; z-index: 50; }
+        .topbar-left { display: flex; align-items: center; gap: 1rem; }
+        .hamburger { display: none; flex-direction: column; cursor: pointer; padding: 8px; gap: 5px; background: none; border: none; }
+        .hamburger span { width: 25px; height: 2px; background: var(--cyan); border-radius: 2px; transition: var(--transition); }
+        .topbar-title { font-size: 1.3rem; font-weight: 700; color: var(--putih); }
+        .topbar-right { display: flex; align-items: center; gap: 1.5rem; }
+        .notification-bell { font-size: 1.5rem; cursor: pointer; background: none; border: none; color: rgba(255,255,255,0.6); padding: 8px 12px; border-radius: 12px; }
+        .user-menu { display: flex; align-items: center; gap: 0.8rem; }
+        .topbar-avatar { width: 38px; height: 38px; background: linear-gradient(135deg, rgba(6,182,212,0.7), rgba(249,115,22,0.7)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--putih); font-size: 0.9rem; border: 2px solid rgba(255,255,255,0.15); overflow: hidden; }
+        .topbar-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .user-menu span { color: var(--putih); font-weight: 600; font-size: 0.9rem; }
+
+        /* ========== PAGE ========== */
+        .page-content { padding: 2rem; animation: fadeInUp 0.6s ease; }
+        .page-header { margin-bottom: 1.5rem; }
+        .page-header h1 { font-size: 1.8rem; font-weight: 800; color: var(--putih); }
+        .page-header p { color: rgba(255,255,255,0.4); }
+
+        /* ========== FILTER ========== */
+        .filter-toolbar { background: rgba(255,255,255,0.02); backdrop-filter: blur(15px); padding: 1.2rem 1.5rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+        .filter-group { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+        .filter-label { font-size: 0.8rem; color: rgba(255,255,255,0.4); font-weight: 600; white-space: nowrap; }
+        .filter-select { padding: 0.45rem 0.8rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 0.8rem; cursor: pointer; font-family: inherit; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.6rem center; padding-right: 2rem; }
+        .filter-select option { background: #1a1a1a !important; color: #ffffff !important; padding: 8px; }
+        .filter-select option:hover, .filter-select option:checked { background: rgba(6,182,212,0.3) !important; }
+        .filter-select:focus { border-color: var(--cyan); outline: none; }
+        .search-input { flex: 1; min-width: 200px; padding: 0.5rem 1rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 0.85rem; font-family: inherit; }
+        .search-input:focus { border-color: var(--cyan); outline: none; }
+        .search-input::placeholder { color: rgba(255,255,255,0.3); }
+        .btn-filter { padding: 0.5rem 1.2rem; background: rgba(6,182,212,0.15); color: var(--cyan); border: 1px solid rgba(6,182,212,0.3); border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: var(--transition); white-space: nowrap; }
+        .btn-filter:hover { background: rgba(6,182,212,0.25); }
+        .btn-reset-filter { padding: 0.5rem 1rem; background: transparent; color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; cursor: pointer; font-size: 0.85rem; text-decoration: none; transition: var(--transition); }
+        .btn-reset-filter:hover { background: rgba(255,255,255,0.03); color: white; }
+        .result-count { font-size: 0.8rem; color: rgba(255,255,255,0.3); white-space: nowrap; }
+
+        /* ========== TABLE ========== */
+        .table-card { background: rgba(255,255,255,0.02); backdrop-filter: blur(15px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; }
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        table thead { background: rgba(0,0,0,0.3); }
+        table th { padding: 0.9rem 1rem; text-align: left; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(255,255,255,0.35); font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        table td { padding: 0.8rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.02); font-size: 0.85rem; vertical-align: middle; }
+        table tbody tr { transition: var(--transition); }
+        table tbody tr:hover { background: rgba(6,182,212,0.03); }
+        .td-id { font-weight: 700; color: var(--cyan); }
+        .td-judul { max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        .status-badge { display: inline-block; padding: 0.25rem 0.7rem; border-radius: 15px; font-size: 0.7rem; font-weight: 700; white-space: nowrap; }
+        .status-MENUNGGU { background: rgba(245,158,11,0.2); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+        .status-DIVERIFIKASI { background: rgba(59,130,246,0.2); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+        .status-DITUGASKAN { background: rgba(139,92,246,0.2); color: #a78bfa; border: 1px solid rgba(139,92,246,0.3); }
+        .status-MENUJU_LOKASI { background: rgba(249,115,22,0.2); color: #fb923c; border: 1px solid rgba(249,115,22,0.3); }
+        .status-DIPROSES { background: rgba(59,130,246,0.2); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); animation: pulseCyan 2s infinite; }
+        .status-SELESAI { background: rgba(16,185,129,0.2); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+        .status-DITOLAK { background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+        .status-KADALUARSA { background: rgba(107,114,128,0.2); color: #9ca3af; border: 1px solid rgba(107,114,128,0.3); }
+
+        .btn-action { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.35rem 0.7rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: var(--transition); text-decoration: none; white-space: nowrap; margin-right: 0.3rem; }
+        .btn-verifikasi { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+        .btn-verifikasi:hover { background: rgba(16,185,129,0.25); }
+        .btn-tolak { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+        .btn-tolak:hover { background: rgba(239,68,68,0.25); }
+        .btn-assign { background: rgba(139,92,246,0.15); color: #a78bfa; border: 1px solid rgba(139,92,246,0.3); }
+        .btn-assign:hover { background: rgba(139,92,246,0.25); }
+        .btn-detail { background: rgba(6,182,212,0.15); color: var(--cyan-muda); border: 1px solid rgba(6,182,212,0.3); }
+        .btn-detail:hover { background: rgba(6,182,212,0.25); }
+
+        /* ========== MODAL ========== */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 200; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-overlay.show { display: flex; }
+        .modal { background: rgba(26,26,26,0.95); backdrop-filter: blur(30px); border: 1px solid rgba(6,182,212,0.2); border-radius: 20px; padding: 2rem; max-width: 550px; width: 90%; max-height: 80vh; overflow-y: auto; animation: modalIn 0.3s ease; box-shadow: 0 25px 60px rgba(0,0,0,0.7); }
+        .modal h2 { font-size: 1.4rem; font-weight: 800; color: var(--putih); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .modal h2 .icon { color: var(--cyan); }
+        .modal .form-group { margin-bottom: 1.2rem; }
+        .modal .form-group label { display: block; font-weight: 600; color: rgba(255,255,255,0.6); margin-bottom: 0.4rem; font-size: 0.85rem; }
+        .modal .form-control { width: 100%; padding: 0.7rem 1rem; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; font-size: 0.9rem; font-family: inherit; transition: var(--transition); }
+        .modal .form-control:focus { border-color: rgba(6,182,212,0.5); outline: none; }
+        textarea.form-control { resize: vertical; min-height: 80px; }
+        select.form-control { cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem; }
+        select.form-control option { background: #1a1a1a !important; color: #ffffff !important; }
+        .modal-actions { display: flex; gap: 0.8rem; justify-content: flex-end; margin-top: 1.5rem; flex-wrap: wrap; }
+        .btn-submit { padding: 0.7rem 1.5rem; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 0.9rem; transition: var(--transition); font-family: inherit; }
+        .btn-submit.cyan { background: linear-gradient(135deg, #06b6d4, #0891b2); color: white; }
+        .btn-submit.cyan:hover { box-shadow: var(--shadow-cyan); }
+        .btn-submit.green { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+        .btn-submit.red { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
+        .btn-cancel { padding: 0.7rem 1.5rem; background: transparent; color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 0.9rem; transition: var(--transition); font-family: inherit; }
+        .btn-cancel:hover { background: rgba(255,255,255,0.05); color: white; }
+
+        /* ========== MODAL DETAIL ========== */
+        .modal .detail-section { margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .modal .detail-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .modal .detail-label { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-bottom: 0.3rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .modal .detail-value { color: white; font-size: 0.95rem; }
+        .dokumentasi-mini { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 0.5rem; margin-top: 0.5rem; }
+        .dokumentasi-mini img { width: 100%; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
+
+        /* ========== ALERT ========== */
+        .alert { padding: 0.9rem 1rem; border-radius: 10px; margin-bottom: 1.5rem; font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; animation: slideUp 0.4s ease; border-left: 4px solid; }
+        .alert-success { background: rgba(16,185,129,0.1); border-color: #10b981; color: #6ee7b7; }
+        .alert-error { background: rgba(239,68,68,0.1); border-color: #ef4444; color: #fca5a5; }
+
+        .empty-state { text-align: center; padding: 4rem 2rem; color: rgba(255,255,255,0.3); }
+        .empty-icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.4; }
+        .empty-state h3 { color: var(--putih); margin-bottom: 0.5rem; }
+
+        .footer { padding: 1.5rem 2rem; text-align: center; color: rgba(255,255,255,0.15); font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.04); background: rgba(0,0,0,0.15); }
+
+        @media (max-width: 1024px) { .sidebar { width: 240px; } .main-content { margin-left: 240px; } }
+        @media (max-width: 768px) {
+            .sidebar { left: -280px; } .sidebar.open { left: 0; } .main-content { margin-left: 0; }
+            .hamburger { display: flex; } .page-content { padding: 1.5rem 1rem; }
+            .user-menu span { display: none; } .filter-toolbar { flex-direction: column; }
+        }
+        @media (max-width: 480px) { .page-header h1 { font-size: 1.4rem; } }
+
+        /* ========== RESPONSIVE TABLE & MODAL ========== */
+        @media (max-width: 768px) {
+            /* Sembunyikan kolom yang kurang penting */
+            table th:nth-child(4),
+            table td:nth-child(4),
+            table th:nth-child(6),
+            table td:nth-child(6) {
+                display: none;
+            }
+            
+            /* Perkecil padding */
+            table th, table td {
+                padding: 0.5rem 0.4rem;
+                font-size: 0.75rem;
+            }
+            
+            .td-id {
+                font-size: 0.8rem;
+            }
+            
+            .td-judul {
+                max-width: 120px;
+                font-size: 0.78rem;
+            }
+            
+            .status-badge {
+                padding: 0.2rem 0.5rem;
+                font-size: 0.65rem;
+            }
+            
+            .btn-action {
+                padding: 0.3rem 0.5rem;
+                font-size: 0.68rem;
+                margin-right: 0.15rem;
+            }
+            
+            /* Modal fullscreen di mobile */
+            .modal {
+                max-width: 95%;
+                padding: 1.5rem;
+                border-radius: 16px;
+            }
+            
+            .modal h2 {
+                font-size: 1.1rem;
+            }
+            
+            /* Filter toolbar */
+            .filter-toolbar form {
+                flex-direction: column;
+            }
+            
+            .search-input {
+                min-width: 100%;
+            }
+            
+            .filter-group {
+                width: 100%;
+            }
+            
+            .filter-select {
+                flex: 1;
+            }
+
+            /* Dokumentasi mini grid */
+            .dokumentasi-mini {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* Sembunyikan lebih banyak kolom */
+            table th:nth-child(3),
+            table td:nth-child(3) {
+                display: none;
+            }
+            
+            /* AKSI TETAP TERLIHAT */
+            table th:nth-child(7),
+            table td:nth-child(7) {
+                display: table-cell !important;
+            }
+            
+            .page-header h1 {
+                font-size: 1.3rem;
+            }
+            
+            .page-content {
+                padding: 1rem 0.5rem;
+            }
+            
+            .filter-toolbar {
+                padding: 0.8rem 1rem;
+            }
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        @media (max-width: 480px) {
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo"><a href="{% url 'admin_dashboard' %}"><span class="logo-icon">💎</span> <span>LaporWarga</span></a></div>
+        <div class="sidebar-user">
+            <div class="sidebar-avatar">
+                {% if user.foto_profil %}<img src="{{ user.foto_profil.url }}" alt="Foto">{% else %}{{ user.username|slice:":1"|upper }}{% endif %}
+            </div>
+            <div class="sidebar-user-info"><h4>{{ user.username }}</h4><p>💎 Administrator</p></div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="sidebar-nav-label">Menu Utama</div>
+            <a href="{% url 'admin_dashboard' %}"><span class="nav-icon">📊</span> Dashboard</a>
+            <a href="{% url 'admin_semua_laporan' %}" class="active"><span class="nav-icon">📋</span> Semua Laporan</a>
+            <a href="{% url 'admin_monitoring_peta' %}"><span class="nav-icon">🗺️</span> Monitoring Peta</a>
+            <a href="{% url 'admin_manajemen_user' %}"><span class="nav-icon">👥</span> Manajemen User</a>
+            <a href="{% url 'admin_log_aktivitas' %}"><span class="nav-icon">📜</span> Log Aktivitas</a>
+            <div class="sidebar-nav-label">Lainnya</div>
+            <a href="{% url 'admin_profil' %}"><span class="nav-icon">👤</span> Profil Saya</a>
+        </nav>
+        <div class="sidebar-footer"><a href="{% url 'auth_logout' %}" class="btn-logout">🚪 Logout</a></div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main-content">
+        <div class="topbar">
+            <div class="topbar-left"><button class="hamburger" onclick="toggleSidebar()"><span></span><span></span><span></span></button><span class="topbar-title">📋 Semua Laporan</span></div>
+            <div class="topbar-right"><button class="notification-bell">🔔</button><div class="user-menu"><div class="topbar-avatar">{% if user.foto_profil %}<img src="{{ user.foto_profil.url }}" alt="Foto">{% else %}{{ user.username|slice:":1"|upper }}{% endif %}</div><span>{{ user.username }}</span></div></div>
+        </div>
+
+        <div class="page-content">
+            <div class="page-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.8rem;">
+                <div>
+                    <h1>📋 Semua Laporan</h1>
+                    <p>Kelola semua laporan masyarakat</p>
+                </div>
+                <div style="display:flex;gap:0.3rem;flex-wrap:wrap;">
+                    <!-- Input Manual -->
+                    <button onclick="openModal('inputManualModal')" style="
+                        display:inline-flex;align-items:center;gap:0.3rem;
+                        padding:0.5rem 0.9rem;font-size:0.8rem;font-weight:700;
+                        background:linear-gradient(135deg,#f97316,#ea580c);
+                        color:white;border:none;border-radius:8px;cursor:pointer;
+                        transition:all 0.3s ease;white-space:nowrap;
+                        box-shadow:0 2px 10px rgba(249,115,22,0.3);
+                    " onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 4px 15px rgba(249,115,22,0.5)';"
+                    onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 10px rgba(249,115,22,0.3)';">
+                        📞 Input Manual
+                    </button>
+                    
+                    <!-- Export Excel -->
+                    <a href="{% url 'admin_export_excel' %}?status={{ status_filter }}&kategori={{ kategori_filter }}&search={{ search }}" style="
+                        display:inline-flex;align-items:center;gap:0.3rem;
+                        padding:0.5rem 0.9rem;font-size:0.8rem;font-weight:700;
+                        background:linear-gradient(135deg,#10b981,#059669);
+                        color:white;text-decoration:none;border-radius:8px;
+                        transition:all 0.3s ease;white-space:nowrap;
+                        box-shadow:0 2px 10px rgba(16,185,129,0.3);
+                    " onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 4px 15px rgba(16,185,129,0.5)';"
+                    onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 10px rgba(16,185,129,0.3)';">
+                        📊 Excel
+                    </a>
+                    
+                    <!-- Export PDF -->
+                    <a href="{% url 'admin_export_pdf' %}?status={{ status_filter }}&kategori={{ kategori_filter }}&search={{ search }}" style="
+                        display:inline-flex;align-items:center;gap:0.3rem;
+                        padding:0.5rem 0.9rem;font-size:0.8rem;font-weight:700;
+                        background:linear-gradient(135deg,#ef4444,#dc2626);
+                        color:white;text-decoration:none;border-radius:8px;
+                        transition:all 0.3s ease;white-space:nowrap;
+                        box-shadow:0 2px 10px rgba(239,68,68,0.3);
+                    " onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 4px 15px rgba(239,68,68,0.5)';"
+                    onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 10px rgba(239,68,68,0.3)';">
+                        📄 PDF
+                    </a>
+                </div>
+            </div>
+
+            {% if messages %}
+            {% for message in messages %}<div class="alert alert-{{ message.tags }}">{% if message.tags == 'success' %}✅{% else %}❌{% endif %} {{ message }}</div>{% endfor %}
+            {% endif %}
+
+            <!-- Filter -->
+            <div class="filter-toolbar">
+                <form method="GET" style="display:flex;flex-wrap:wrap;gap:1rem;width:100%;align-items:center;">
+                    <div class="filter-group"><span class="filter-label">Status:</span><select name="status" class="filter-select" onchange="this.form.submit()"><option value="">Semua Status</option>{% for sc, sl in status_choices %}<option value="{{ sc }}" {% if status_filter == sc %}selected{% endif %}>{{ sl }}</option>{% endfor %}</select></div>
+                    <div class="filter-group"><span class="filter-label">Kategori:</span><select name="kategori" class="filter-select" onchange="this.form.submit()"><option value="">Semua Kategori</option>{% for kc, kl in kategori_choices %}<option value="{{ kc }}" {% if kategori_filter == kc %}selected{% endif %}>{{ kl }}</option>{% endfor %}</select></div>
+                    <input type="text" name="search" class="search-input" placeholder="🔍 Cari judul, deskripsi, pelapor..." value="{{ search }}">
+                    <button type="submit" class="btn-filter">🔍 Filter</button>
+                    <a href="{% url 'admin_semua_laporan' %}" class="btn-reset-filter">🔄 Reset</a>
+                    <span class="result-count">{{ laporan_list.count }} laporan</span>
+                </form>
+            </div>
+
+            <!-- Table -->
+            <div class="table-card">
+                {% if laporan_list %}
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Judul</th>
+                                <th>Pelapor</th>
+                                <th>Kategori</th>
+                                <th>Status</th>
+                                <th>Petugas</th>
+                                <th>Tgl</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for lap in laporan_list %}
+                            <tr>
+                                <td class="td-id">#{{ lap.id }}</td>
+                                <td class="td-judul" title="{{ lap.judul }}">{{ lap.judul|truncatechars:40 }}</td>
+                                <td>{{ lap.pelapor.username }}</td>
+                                <td><span style="font-size:0.8rem;">{{ lap.get_kategori_display }}</span></td>
+                                <td><span class="status-badge status-{{ lap.status }}">{{ lap.get_status_display }}</span></td>
+                                <td>
+                                    {% with penanganan=lap.penanganan.first %}
+                                        {% if penanganan %}
+                                            {% for p in penanganan.petugas.all %}
+                                                <span style="font-size:0.7rem;display:inline-block;background:rgba(139,92,246,0.15);color:#a78bfa;padding:0.2rem 0.4rem;border-radius:4px;margin:0.1rem;">👷 {{ p.username }}</span>
+                                            {% endfor %}
+                                        {% else %}
+                                            <span style="color:rgba(255,255,255,0.3);">-</span>
+                                        {% endif %}
+                                    {% endwith %}
+                                </td>
+                                <td>{{ lap.created_at|date:"d/m/Y" }}</td>
+                                <td>
+                                    <div style="display:flex;gap:0.3rem;flex-wrap:wrap;">
+                                        {% if lap.status == 'MENUNGGU' %}
+                                        <button class="btn-action btn-verifikasi" onclick="openVerifikasiModal({{ lap.id }}, '{{ lap.judul|escapejs }}')">✅</button>
+                                        <button class="btn-action btn-tolak" onclick="openTolakModal({{ lap.id }}, '{{ lap.judul|escapejs }}')">❌</button>
+                                        {% elif lap.status == 'DIVERIFIKASI' %}
+                                        <button class="btn-action btn-assign" onclick="openAssignModal({{ lap.id }}, '{{ lap.judul|escapejs }}')">👷</button>
+                                        {% endif %}
+                                        <button class="btn-action btn-detail" onclick="openDetailModal({{ lap.id }})">👁️</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="empty-state"><div class="empty-icon">📭</div><h3>Tidak Ada Laporan</h3><p>Coba ubah filter atau kata kunci pencarian</p></div>
+                {% endif %}
+            </div>
+        </div>
+        <footer class="footer"><p>&copy; <span id="currentYear"></span> LaporWarga - Kecamatan Medan Selayang · Panel Administrator</p></footer>
+    </div>
+
+    <!-- MODAL VERIFIKASI -->
+    <div class="modal-overlay" id="verifikasiModal">
+        <div class="modal">
+            <h2><span class="icon">✅</span> Verifikasi Laporan</h2>
+            <p style="color:rgba(255,255,255,0.5);margin-bottom:1rem;" id="verifikasiTitle"></p>
+            <form method="POST" action="" id="verifikasiForm">
+                {% csrf_token %}<input type="hidden" name="action" value="verifikasi">
+                <div class="form-group"><label>Keterangan</label><textarea name="keterangan" class="form-control" placeholder="Tambahkan catatan verifikasi...">Laporan telah diverifikasi oleh admin</textarea></div>
+                <div class="modal-actions"><button type="button" class="btn-cancel" onclick="closeModal('verifikasiModal')">Batal</button><button type="submit" class="btn-submit green">✅ Verifikasi</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL TOLAK -->
+    <div class="modal-overlay" id="tolakModal">
+        <div class="modal">
+            <h2><span class="icon" style="color:#f87171;">❌</span> Tolak Laporan</h2>
+            <p style="color:rgba(255,255,255,0.5);margin-bottom:1rem;" id="tolakTitle"></p>
+            <form method="POST" action="" id="tolakForm">
+                {% csrf_token %}<input type="hidden" name="action" value="tolak">
+                <div class="form-group"><label>Alasan Penolakan</label><textarea name="keterangan" class="form-control" placeholder="Jelaskan alasan penolakan..." required>Laporan ditolak oleh admin</textarea></div>
+                <div class="modal-actions"><button type="button" class="btn-cancel" onclick="closeModal('tolakModal')">Batal</button><button type="submit" class="btn-submit red">❌ Tolak</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL ASSIGN PETUGAS -->
+    <div class="modal-overlay" id="assignModal">
+        <div class="modal" style="max-width:650px;">
+            <h2><span class="icon" style="color:#a78bfa;">👷</span> Assign Petugas</h2>
+            <p style="color:rgba(255,255,255,0.5);margin-bottom:1.5rem;" id="assignTitle"></p>
+            <form method="POST" action="" id="assignForm">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>👷 Pilih Petugas <span style="color:#f97316;">*</span></label>
+                    <select name="petugas_id" class="form-control" multiple required 
+                        style="min-height:200px;padding:0.8rem;font-size:0.9rem;line-height:2;">
+                        {% for petugas in petugas_list %}
+                        <option value="{{ petugas.id }}" style="padding:0.5rem;">
+                            👷 {{ petugas.username }}
+                            {% if petugas.jabatan %} — {{ petugas.get_jabatan_display }}{% endif %}
+                            {% if petugas.phone %} | 📱 {{ petugas.phone }}{% endif %}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <div class="form-hint" style="color:#f97316;margin-top:0.5rem;font-weight:600;">
+                        💡 Tahan <strong>Ctrl</strong> (atau <strong>Cmd</strong> di Mac) untuk memilih lebih dari 1 petugas
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>📝 Catatan</label>
+                    <textarea name="catatan" class="form-control" placeholder="Catatan untuk petugas..." rows="2"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('assignModal')">Batal</button>
+                    <button type="submit" class="btn-submit" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:white;">👷 Assign Petugas</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DETAIL LAPORAN -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal" style="max-width:650px;max-height:85vh;overflow-y:auto;">
+            <h2><span class="icon" style="color:var(--cyan);">📋</span> Detail Laporan <span id="detailId" style="color:var(--cyan);"></span></h2>
+            <div id="detailContent"><p style="text-align:center;color:rgba(255,255,255,0.5);">Memuat data...</p></div>
+            <div class="modal-actions"><button type="button" class="btn-cancel" onclick="closeModal('detailModal')">Tutup</button></div>
+        </div>
+    </div>
+
+    <div id="sidebarOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:99;" onclick="toggleSidebar()"></div>
+
+    <!-- MODAL INPUT LAPORAN MANUAL -->
+    <div class="modal-overlay" id="inputManualModal">
+        <div class="modal" style="max-width:600px;">
+            <h2><span class="icon" style="color:#f97316;">📞</span> Input Laporan Manual</h2>
+            <p style="color:rgba(255,255,255,0.5);margin-bottom:1rem;">Laporan dari masyarakat via WhatsApp / Telepon</p>
+            
+            <form method="POST" action="{% url 'admin_buat_laporan' %}">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label>📝 Judul <span style="color:#f87171;">*</span></label>
+                    <input type="text" name="judul" class="form-control" placeholder="Judul laporan..." required>
+                </div>
+
+                <div class="form-group">
+                    <label>📂 Kategori <span style="color:#f87171;">*</span></label>
+                    <select name="kategori" class="form-control" required>
+                        <option value="">-- Pilih Kategori --</option>
+                        <option value="KEAMANAN">🔒 Gangguan Keamanan</option>
+                        <option value="KETERTIBAN">📋 Gangguan Ketertiban Umum</option>
+                        <option value="PENYAKIT_MSY">⚠️ Miras, Narkoba & Judi</option>
+                        <option value="BENCANA">🌪️ Bencana / Kejadian Khusus</option>
+                        <option value="PENEGAKAN_PERDA">📜 Pelanggaran Perda</option>
+                        <option value="LAINNYA">📌 Lainnya</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>📝 Deskripsi <span style="color:#f87171;">*</span></label>
+                    <textarea name="deskripsi" class="form-control" rows="3" placeholder="Deskripsi kejadian..." required></textarea>
+                </div>
+
+                <div class="form-row" style="grid-template-columns:1fr 1fr;">
+                    <div class="form-group">
+                        <label>📍 Alamat</label>
+                        <input type="text" name="alamat_kejadian" class="form-control" placeholder="Alamat kejadian...">
+                    </div>
+                    <div class="form-group">
+                        <label>👤 Nama Pelapor</label>
+                        <input type="text" name="nama_pelapor" class="form-control" placeholder="Nama pelapor (opsional)">
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('inputManualModal')">Batal</button>
+                    <button type="submit" class="btn-submit" style="background:linear-gradient(135deg,#f97316,#ea580c);">📤 Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        function toggleSidebar(){const s=document.getElementById('sidebar'),o=document.getElementById('sidebarOverlay');s.classList.contains('open')?(s.classList.remove('open'),o.style.display='none'):(s.classList.add('open'),o.style.display='block');}
+
+        function openModal(id){document.getElementById(id).classList.add('show');document.body.style.overflow='hidden';}
+        function closeModal(id){document.getElementById(id).classList.remove('show');document.body.style.overflow='';}
+
+        function openVerifikasiModal(id, judul){
+            document.getElementById('verifikasiTitle').textContent = 'Laporan #'+id+': '+judul;
+            document.getElementById('verifikasiForm').action = "{% url 'admin_verifikasi_laporan' 0 %}".replace('0', id);
+            openModal('verifikasiModal');
+        }
+        function openTolakModal(id, judul){
+            document.getElementById('tolakTitle').textContent = 'Laporan #'+id+': '+judul;
+            document.getElementById('tolakForm').action = "{% url 'admin_verifikasi_laporan' 0 %}".replace('0', id);
+            openModal('tolakModal');
+        }
+        function openAssignModal(id, judul){
+            document.getElementById('assignTitle').textContent = 'Laporan #'+id+': '+judul;
+            document.getElementById('assignForm').action = "{% url 'admin_assign_petugas' 0 %}".replace('0', id);
+            openModal('assignModal');
+        }
+        
+        function openDetailModal(id) {
+            document.getElementById('detailId').textContent = '#' + id;
+            document.getElementById('detailContent').innerHTML = '<p style="text-align:center;color:rgba(255,255,255,0.5);">⏳ Memuat data...</p>';
+            openModal('detailModal');
+
+            fetch("{% url 'admin_api_laporan_json' %}")
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    var laporan = null;
+                    for (var i = 0; i < data.laporan.length; i++) {
+                        if (data.laporan[i].id == id) { laporan = data.laporan[i]; break; }
+                    }
+                    if (laporan) {
+                        var html = '';
+                        html += '<div class="detail-section"><div class="detail-label">📝 Judul</div><div class="detail-value">' + laporan.judul + '</div></div>';
+                        html += '<div class="detail-section"><div class="detail-label">📂 Kategori</div><div class="detail-value">' + laporan.kategori + '</div></div>';
+                        html += '<div class="detail-section"><div class="detail-label">📊 Status</div><div class="detail-value">' + laporan.status + '</div></div>';
+                        html += '<div class="detail-section"><div class="detail-label">👤 Pelapor</div><div class="detail-value">@' + laporan.pelapor + '</div></div>';
+                        html += '<div class="detail-section"><div class="detail-label">🗺️ Koordinat</div><div class="detail-value">' + laporan.latitude + ', ' + laporan.longitude + '</div></div>';
+                        html += '<div class="detail-section"><div class="detail-label">📅 Tanggal Laporan</div><div class="detail-value">' + laporan.created_at + '</div></div>';
+                        
+                        if (laporan.dokumentasi && laporan.dokumentasi.length > 0) {
+                            html += '<div class="detail-section"><div class="detail-label">📸 Dokumentasi Penanganan (' + laporan.dokumentasi.length + ' foto)</div><div class="dokumentasi-mini">';
+                            for (var d = 0; d < laporan.dokumentasi.length; d++) {
+                                var dok = laporan.dokumentasi[d];
+                                html += '<div><img src="' + dok.foto_url + '" alt="Dokumentasi" loading="lazy">';
+                                if (dok.keterangan) { html += '<div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-align:center;padding:0.3rem;">' + dok.keterangan + '</div>'; }
+                                html += '</div>';
+                            }
+                            html += '</div></div>';
+                        }
+                        document.getElementById('detailContent').innerHTML = html;
+                    } else {
+                        document.getElementById('detailContent').innerHTML = '<p style="text-align:center;color:rgba(255,255,255,0.5);">❌ Data laporan tidak ditemukan.</p>';
+                    }
+                })
+                .catch(function() {
+                    document.getElementById('detailContent').innerHTML = '<p style="text-align:center;color:#f87171;">❌ Gagal memuat data. <a href="?search=' + id + '" style="color:var(--cyan);">Coba cari di sini</a></p>';
+                });
+        }
+
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e){ if(e.target === this) closeModal(this.id); });
+        });
+    </script>
+</body>
+</html>

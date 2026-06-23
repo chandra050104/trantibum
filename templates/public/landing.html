@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LaporWarga - Laporkan Masalah Kotamu</title>
+    
+    <style>
+        /* ========== CSS RESET & VARIABLES ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --biru: #2563eb;
+            --biru-tua: #1e40af;
+            --biru-muda: #3b82f6;
+            --hitam: #111827;
+            --hitam-abu: #1f2937;
+            --ungu: #7c3aed;
+            --ungu-muda: #8b5cf6;
+            --putih: #ffffff;
+            --putih-abu: #f3f4f6;
+        }
+
+        /* ========== ANIMASI BACKGROUND ========== */
+        @keyframes gradientShift {
+            0% { background-color: #2563eb; }
+            20% { background-color: #1e40af; }
+            40% { background-color: #111827; }
+            60% { background-color: #1f2937; }
+            80% { background-color: #7c3aed; }
+            100% { background-color: #2563eb; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-60px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(5deg); }
+            50% { transform: translateY(-10px) rotate(0deg); }
+            75% { transform: translateY(-25px) rotate(-5deg); }
+        }
+
+        @keyframes floatReverse {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-15px) rotate(-3deg); }
+            50% { transform: translateY(-5px) rotate(0deg); }
+            75% { transform: translateY(-20px) rotate(3deg); }
+        }
+
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-30px); }
+        }
+
+        @keyframes floatHorizontal {
+            0%, 100% { transform: translateX(0px); }
+            50% { transform: translateX(30px); }
+        }
+
+        @keyframes floatHorizontalReverse {
+            0%, 100% { transform: translateX(0px); }
+            50% { transform: translateX(-30px); }
+        }
+
+        @keyframes formPaperFloat {
+            0% { transform: translateY(60px) rotate(-10deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-300px) rotate(5deg); opacity: 0; }
+        }
+
+        @keyframes cameraFloat {
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.5; }
+            80% { opacity: 0.5; }
+            100% { transform: translate(100px, -250px) rotate(15deg); opacity: 0; }
+        }
+
+        @keyframes checkmarkPop {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            50% { transform: scale(1.3) rotate(10deg); opacity: 0.7; }
+            100% { transform: scale(1) rotate(0deg); opacity: 0; }
+        }
+
+        @keyframes documentSlide {
+            0% { transform: translateX(-80px) translateY(0); opacity: 0; }
+            20% { opacity: 0.5; }
+            80% { opacity: 0.5; }
+            100% { transform: translateX(80px) translateY(-200px); opacity: 0; }
+        }
+
+        @keyframes personWalk {
+            0% { transform: translateX(-40px) translateY(0); }
+            25% { transform: translateX(0) translateY(-5px); }
+            50% { transform: translateX(40px) translateY(0); }
+            75% { transform: translateX(0) translateY(-5px); }
+            100% { transform: translateX(-40px) translateY(0); }
+        }
+
+        @keyframes personWalk2 {
+            0% { transform: translateX(20px) translateY(0) scaleX(-1); }
+            50% { transform: translateX(-30px) translateY(-8px) scaleX(-1); }
+            100% { transform: translateX(20px) translateY(0) scaleX(-1); }
+        }
+
+        @keyframes locationPulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.3); opacity: 0.6; }
+        }
+
+        @keyframes typingDots {
+            0%, 20% { opacity: 0; }
+            50% { opacity: 1; }
+            80%, 100% { opacity: 0; }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* ========== BODY ========== */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--putih);
+            animation: gradientShift 15s infinite;
+            transition: background-color 1s ease;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ========== NAVBAR ========== */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--putih);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .navbar-logo span {
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .navbar-logo .logo-icon {
+            font-size: 2rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* ========== HAMBURGER ========== */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            z-index: 1001;
+            padding: 8px;
+            gap: 6px;
+        }
+
+        .hamburger span {
+            width: 30px;
+            height: 3px;
+            background: var(--putih);
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+
+        /* ========== NAV MENU ========== */
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            color: var(--putih);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.6rem 1.2rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            position: relative;
+            font-size: 0.95rem;
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: var(--putih);
+            transition: width 0.3s ease;
+        }
+
+        .nav-menu a:hover::after {
+            width: 50%;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        /* ========== BUTTONS ========== */
+        .btn-login {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--putih);
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-login:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-register {
+            background: rgba(255, 255, 255, 0.15);
+            color: #1e40af;
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-register:hover {
+            background: #e0e7ff;
+            border-color: #e0e7ff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-primary {
+            background: var(--putih);
+            color: #1e40af;
+            padding: 0.7rem 2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+            background: #e0e7ff;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--putih);
+            padding: 0.7rem 2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--putih);
+            transform: translateY(-2px);
+        }
+
+        /* ========== HERO SECTION WITH BACKGROUND ANIMATION ========== */
+        .hero {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            min-height: 90vh;
+            overflow: hidden;
+        }
+
+        /* === HERO BACKGROUND ANIMATION === */
+        .hero-bg-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Icon orang-orangan (siluet) */
+        .person-silhouette {
+            position: absolute;
+            font-size: 8rem;
+            opacity: 0.15;
+            animation: personWalk 8s ease-in-out infinite;
+            filter: blur(1px);
+        }
+
+        .person-silhouette:nth-child(1) {
+            top: 20%;
+            left: 5%;
+            animation-delay: 0s;
+            font-size: 6rem;
+        }
+
+        .person-silhouette:nth-child(2) {
+            top: 30%;
+            right: 8%;
+            animation: personWalk2 10s ease-in-out infinite;
+            font-size: 7rem;
+            opacity: 0.18;
+        }
+
+        .person-silhouette:nth-child(3) {
+            bottom: 25%;
+            left: 15%;
+            animation-delay: 2s;
+            font-size: 5rem;
+            opacity: 0.12;
+        }
+
+        .person-silhouette:nth-child(4) {
+            top: 50%;
+            right: 15%;
+            animation-delay: 4s;
+            font-size: 6.5rem;
+            opacity: 0.14;
+        }
+
+        /* Form/dokumen berterbangan */
+        .floating-form {
+            position: absolute;
+            font-size: 4rem;
+            opacity: 0;
+            animation: formPaperFloat 7s ease-in-out infinite;
+        }
+
+        .floating-form:nth-child(5) {
+            top: 70%;
+            left: 25%;
+            animation-delay: 0s;
+            font-size: 3.5rem;
+        }
+
+        .floating-form:nth-child(6) {
+            top: 50%;
+            left: 60%;
+            animation-delay: 3s;
+            font-size: 3rem;
+        }
+
+        .floating-form:nth-child(7) {
+            top: 80%;
+            left: 50%;
+            animation-delay: 5s;
+            font-size: 4rem;
+        }
+
+        /* Kamera */
+        .floating-camera {
+            position: absolute;
+            font-size: 5rem;
+            opacity: 0;
+            animation: cameraFloat 8s ease-in-out infinite;
+        }
+
+        .floating-camera:nth-child(8) {
+            top: 15%;
+            right: 20%;
+            animation-delay: 1s;
+        }
+
+        .floating-camera:nth-child(9) {
+            top: 60%;
+            left: 10%;
+            animation-delay: 5s;
+            font-size: 3.5rem;
+        }
+
+        /* Checkmark/circle verifikasi */
+        .floating-check {
+            position: absolute;
+            font-size: 3rem;
+            opacity: 0;
+            animation: checkmarkPop 5s ease-in-out infinite;
+        }
+
+        .floating-check:nth-child(10) {
+            top: 35%;
+            left: 30%;
+            animation-delay: 2s;
+        }
+
+        .floating-check:nth-child(11) {
+            top: 55%;
+            right: 25%;
+            animation-delay: 4s;
+        }
+
+        .floating-check:nth-child(12) {
+            top: 25%;
+            left: 70%;
+            animation-delay: 6s;
+        }
+
+        /* Lokasi pin */
+        .location-pin {
+            position: absolute;
+            font-size: 3.5rem;
+            opacity: 0;
+            animation: locationPulse 4s ease-in-out infinite, floatSlow 6s ease-in-out infinite;
+        }
+
+        .location-pin:nth-child(13) {
+            top: 40%;
+            left: 45%;
+            animation-delay: 0s;
+        }
+
+        .location-pin:nth-child(14) {
+            top: 65%;
+            right: 35%;
+            animation-delay: 2s;
+            font-size: 2.5rem;
+        }
+
+        .location-pin:nth-child(15) {
+            top: 20%;
+            left: 55%;
+            animation-delay: 3.5s;
+            font-size: 3rem;
+        }
+
+        /* Dokumen slide */
+        .document-slider {
+            position: absolute;
+            font-size: 4rem;
+            opacity: 0;
+            animation: documentSlide 9s ease-in-out infinite;
+        }
+
+        .document-slider:nth-child(16) {
+            top: 30%;
+            left: 15%;
+            animation-delay: 1.5s;
+        }
+
+        .document-slider:nth-child(17) {
+            top: 70%;
+            right: 20%;
+            animation-delay: 4.5s;
+            font-size: 3rem;
+        }
+
+        /* Hamburan dots/partikel */
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .particle:nth-child(18) { top: 10%; left: 10%; animation-delay: 0s; }
+        .particle:nth-child(19) { top: 20%; right: 15%; animation-delay: 1s; width: 5px; height: 5px; }
+        .particle:nth-child(20) { top: 50%; left: 20%; animation-delay: 2s; width: 10px; height: 10px; }
+        .particle:nth-child(21) { top: 60%; right: 10%; animation-delay: 3s; width: 6px; height: 6px; }
+        .particle:nth-child(22) { top: 35%; left: 65%; animation-delay: 4s; }
+        .particle:nth-child(23) { top: 75%; left: 40%; animation-delay: 5s; width: 7px; height: 7px; }
+        .particle:nth-child(24) { top: 15%; right: 35%; animation-delay: 2.5s; }
+
+        /* Status bar animasi */
+        .status-bar {
+            position: absolute;
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            opacity: 0.4;
+        }
+
+        .status-bar:nth-child(25) {
+            top: 45%;
+            left: 35%;
+            animation: floatHorizontal 7s ease-in-out infinite;
+        }
+
+        .status-bar:nth-child(26) {
+            top: 55%;
+            right: 30%;
+            animation: floatHorizontalReverse 8s ease-in-out infinite;
+            width: 150px;
+        }
+
+        .status-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #60a5fa, #a78bfa);
+            border-radius: 2px;
+            animation: shimmer 3s linear infinite;
+            background-size: 200% auto;
+        }
+
+        /* ========== HERO CONTENT ========== */
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 900px;
+            animation: slideInLeft 1s ease;
+        }
+
+        .hero-content h1 {
+            font-size: 3.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #c7d2fe 50%, #ddd6fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: rgba(255, 255, 255, 0.9);
+            animation: fadeInUp 0.8s ease 0.3s both;
+            line-height: 1.8;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease 0.6s both;
+        }
+
+        /* ========== HOW IT WORKS SECTION ========== */
+        .how-it-works {
+            padding: 5rem 2rem;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 4rem;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .step-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .step-card:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .step-number {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.3rem;
+        }
+
+        .step-card-icon {
+            font-size: 3rem;
+            margin: 1rem 0;
+        }
+
+        .step-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .step-card p {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 0.95rem;
+        }
+
+        /* ========== FEATURES SECTION ========== */
+        .features {
+            padding: 5rem 2rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* ========== STATS SECTION ========== */
+        .stats {
+            padding: 5rem 2rem;
+            background: rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(10px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: scale(1.05);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s linear infinite;
+            background-size: 200% auto;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* ========== TESTIMONIALS ========== */
+        .testimonials {
+            padding: 5rem 2rem;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            transition: all 0.3s ease;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.14);
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .author-info h4 {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .author-info p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        .rating {
+            color: #fbbf24;
+            font-size: 0.9rem;
+        }
+
+        /* ========== CTA ========== */
+        .cta {
+            padding: 5rem 2rem;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .cta-card {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .cta p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        /* ========== FOOTER ========== */
+        .footer {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(15px);
+            padding: 4rem 2rem 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.2rem;
+            font-weight: 700;
+        }
+
+        .footer-section p, 
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.65);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.8rem;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .footer-section a:hover {
+            color: var(--putih);
+            transform: translateX(5px);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            text-decoration: none;
+        }
+
+        .social-link:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        /* ========== MOBILE RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                flex-direction: column;
+                background: rgba(0, 0, 0, 0.95);
+                backdrop-filter: blur(30px);
+                -webkit-backdrop-filter: blur(30px);
+                width: 100%;
+                height: 100vh;
+                justify-content: center;
+                align-items: center;
+                transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                gap: 2rem;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .nav-menu a {
+                font-size: 1.2rem;
+            }
+
+            .hero {
+                min-height: auto;
+                padding: 3rem 1rem;
+            }
+
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+
+            .person-silhouette {
+                font-size: 4rem !important;
+            }
+
+            .floating-form,
+            .floating-camera,
+            .floating-check,
+            .location-pin,
+            .document-slider {
+                font-size: 2rem !important;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .cta h2 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content h1 {
+                font-size: 1.8rem;
+            }
+
+            .navbar {
+                padding: 1rem;
+            }
+
+            .navbar-logo {
+                font-size: 1.4rem;
+            }
+
+            .cta-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .btn-primary, 
+            .btn-outline {
+                padding: 0.6rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+
+
+        .contact-float {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 999;
+            display: flex;
+            gap: 0.8rem;
+        }
+        .contact-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.2rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        .contact-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+        .contact-telp { 
+            background: #dc2626; 
+            color: white;
+            animation: pulseTelp 2s infinite;
+        }
+        .contact-wa { 
+            background: #25d366; 
+            color: white;
+            animation: pulseWA 2s infinite;
+        }
+        @keyframes pulseTelp {
+            0%, 100% { box-shadow: 0 6px 20px rgba(220,38,38,0.3); }
+            50% { box-shadow: 0 6px 30px rgba(220,38,38,0.6); }
+        }
+        @keyframes pulseWA {
+            0%, 100% { box-shadow: 0 6px 20px rgba(37,211,102,0.3); }
+            50% { box-shadow: 0 6px 30px rgba(37,211,102,0.6); }
+        }
+        @media (max-width: 480px) {
+            .contact-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- ========== NAVBAR ========== -->
+    <nav class="navbar">
+        <a href="{% url 'public_landing' %}" class="navbar-logo">
+            <span class="logo-icon">📍</span>
+            <span>LaporWarga</span>
+        </a>
+        
+        <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="{% url 'public_landing' %}"><i class="fa-solid fa-house"></i> Beranda</a></li>
+            <li><a href="{% url 'public_info' %}">ℹ<i class="fa-solid fa-circle-info"></i> Info</a></li>
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'public_buat_laporan' %}">📝 Buat Laporan</a></li>
+                <li><a href="{% url 'public_tracking' %}">🔍 Tracking</a></li>
+                <li><a href="{% url 'masyarakat_dashboard' %}">📊 Dashboard</a></li>
+                <li><a href="{% url 'auth_logout' %}" class="btn-login">🚪 Logout</a></li>
+            {% else %}
+                <li><a href="{% url 'auth_login' %}" class="btn-login"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
+                <li><a href="{% url 'auth_register' %}" class="btn-register"><i class="fa-solid fa-user-plus"></i> Daftar</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <!-- ========== HERO SECTION ========== -->
+    <section class="hero">
+        <!-- BACKGROUND ANIMATION ELEMENTS -->
+        <div class="hero-bg-animation">
+            <!-- Orang-orangan (siluet) -->
+            <div class="person-silhouette">🚶</div>
+            <div class="person-silhouette">🚶‍♀️</div>
+            <div class="person-silhouette">🧑‍💼</div>
+            <div class="person-silhouette">👷</div>
+            
+            <!-- Form/dokumen terbang -->
+            <div class="floating-form">📄</div>
+            <div class="floating-form">📋</div>
+            <div class="floating-form">📝</div>
+            
+            <!-- Kamera -->
+            <div class="floating-camera">📸</div>
+            <div class="floating-camera">📱</div>
+            
+            <!-- Checkmark verifikasi -->
+            <div class="floating-check">✅</div>
+            <div class="floating-check">✔️</div>
+            <div class="floating-check">🎯</div>
+            
+            <!-- Lokasi pin -->
+            <div class="location-pin">📍</div>
+            <div class="location-pin">📌</div>
+            <div class="location-pin">🗺️</div>
+            
+            <!-- Dokumen slide horizontal -->
+            <div class="document-slider">📑</div>
+            <div class="document-slider">🗂️</div>
+            
+            <!-- Partikel dots -->
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            
+            <!-- Status bar -->
+            <div class="status-bar">
+                <div class="status-bar-fill" style="width: 75%;"></div>
+            </div>
+            <div class="status-bar">
+                <div class="status-bar-fill" style="width: 45%;"></div>
+            </div>
+        </div>
+        
+        <!-- HERO CONTENT -->
+        <div class="hero-content">
+            <h1>Suara Anda,<br>Perubahan Nyata</h1>
+            <p>Laporkan masalah di lingkunganmu dalam hitungan detik. Pantau proses penanganan secara transparan. Bersama kita wujudkan kota yang lebih baik untuk semua.</p>
+            <div class="hero-buttons">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'public_buat_laporan' %}" class="btn-primary">
+                        🚀 Laporkan Sekarang
+                    </a>
+                    <a href="{% url 'public_tracking' %}" class="btn-outline">
+                        🔍 Lacak Laporan
+                    </a>
+                {% else %}
+                    <a href="{% url 'auth_register' %}" class="btn-primary">
+                        <i class="fa-solid fa-user-plus"></i>
+                         Mulai Gratis
+                    </a>
+                    <a href="{% url 'auth_login' %}" class="btn-outline">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                         Masuk
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== HOW IT WORKS ========== -->
+    <section class="how-it-works">
+        <h2 class="section-title">Bagaimana Cara Kerjanya?</h2>
+        <p class="section-subtitle">Proses pelaporan yang simpel dan transparan</p>
+        
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <div class="step-card-icon">📱</div>
+                <h3>Laporkan</h3>
+                <p>Ambil foto, isi detail, dan tandai lokasi masalah melalui form yang mudah digunakan.</p>
+            </div>
+            
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <div class="step-card-icon">🔍</div>
+                <h3>Verifikasi</h3>
+                <p>Tim admin memverifikasi laporan dan menugaskan petugas yang sesuai di lapangan.</p>
+            </div>
+            
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <div class="step-card-icon">🛠️</div>
+                <h3>Tindak Lanjut</h3>
+                <p>Petugas menuju lokasi, menangani masalah, dan mengunggah bukti penanganan.</p>
+            </div>
+            
+            <div class="step-card">
+                <div class="step-number">4</div>
+                <div class="step-card-icon">🎉</div>
+                <h3>Selesai</h3>
+                <p>Masalah terselesaikan! Anda bisa memberi rating dan feedback untuk kualitas layanan.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== FEATURES ========== -->
+    <section class="features">
+        <h2 class="section-title">Fitur Unggulan</h2>
+        <p class="section-subtitle">Kenapa harus LaporWarga?</p>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="feature-icon">⚡</span>
+                <h3>Super Cepat</h3>
+                <p>Buat laporan dalam waktu kurang dari 2 menit. Form yang intuitif dan user-friendly.</p>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">🎯</span>
+                <h3>Lokasi Akurat</h3>
+                <p>Gunakan peta interaktif untuk pinpoint lokasi masalah dengan presisi tinggi.</p>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon"><i class="fa-solid fa-map-location-dot"></i></span>
+                <h3>Tracking Real-time</h3>
+                <p>Pantau status laporan Anda 24/7 dari mana saja. Update otomatis setiap perubahan.</p>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">🔒</span>
+                <h3>Data Aman</h3>
+                <p>Privasi Anda terlindungi. Data dienkripsi dan hanya diakses oleh pihak berwenang.</p>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">⭐</span>
+                <h3>Rating & Feedback</h3>
+                <p>Beri penilaian terhadap kualitas penanganan untuk meningkatkan layanan.</p>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">📱</span>
+                <h3>Mobile Friendly</h3>
+                <p>Akses dari smartphone kapan saja dan di mana saja. Responsive dan ringan.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== STATS ========== -->
+    <section class="stats">
+        <h2 class="section-title">Dampak Kami</h2>
+        <p class="section-subtitle">Bersama warga, kita membuat perubahan</p>
+        
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">5,234+</div>
+                <div class="stat-label">Laporan Diterima</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">92%</div>
+                <div class="stat-label">Terselesaikan</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">85+</div>
+                <div class="stat-label">Petugas Aktif</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Layanan Nonstop</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== TESTIMONIALS ========== -->
+    <!-- ========== TESTIMONIALS ========== -->
+    <section class="testimonials">
+        <h2 class="section-title">Apa Kata Warga?</h2>
+        <p class="section-subtitle">
+            Testimoni dari pengguna LaporWarga 
+            {% if avg_rating > 0 %}
+                • Rating rata-rata: <strong style="color:#fbbf24;">{{ avg_rating }}/5 ⭐</strong>
+                ({{ total_feedback }} feedback)
+            {% endif %}
+        </p>
+        
+        <div class="testimonials-grid">
+            {% if testimoni_list %}
+                {% for t in testimoni_list %}
+                <div class="testimonial-card">
+                    <div class="rating">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= t.rating %}⭐{% else %}☆{% endif %}
+                        {% endfor %}
+                    </div>
+                    <p class="testimonial-text">"{{ t.komentar }}"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">👤</div>
+                        <div class="author-info">
+                            <h4>{{ t.laporan.pelapor.username }}</h4>
+                            <p>{{ t.created_at|date:"d M Y" }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="testimonial-card">
+                    <div class="rating">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">"Jadilah yang pertama memberikan feedback! Bagikan pengalaman Anda setelah laporan selesai ditangani."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">📢</div>
+                        <div class="author-info"><h4>LaporWarga</h4><p>Admin</p></div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <div class="contact-float">
+        <a href="tel:+6285282962318" class="contact-btn contact-telp">
+            <i class="fa-solid fa-phone"></i>
+            Call Center
+        </a>
+        <a href="https://wa.me/+6285282962318" target="_blank" class="contact-btn contact-wa">
+            <i class="fa-brands fa-whatsapp"></i>
+            Chat WhatsApp
+        </a>
+    </div>
+
+    <!-- ========== CTA ========== -->
+    <section class="cta">
+        <div class="cta-card">
+            <h2>🚀 Siap Membuat Perubahan?</h2>
+            <p>Bergabunglah dengan ribuan warga yang peduli. Laporkan masalah di sekitarmu dan bantu wujudkan lingkungan yang lebih baik.</p>
+            {% if user.is_authenticated %}
+                <a href="{% url 'public_buat_laporan' %}" class="btn-primary">
+                    📝 Buat Laporan Baru
+                </a>
+            {% else %}
+                <a href="{% url 'auth_register' %}" class="btn-primary">
+                    ✨ Daftar Sekarang - Gratis!
+                </a>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3><i class="fa-solid fa-map-location-dot"></i> LaporWarga</h3>
+                <p>Platform pelaporan warga digital untuk Medan Selayang yang lebih baik. Laporkan, pantau, dan selesaikan masalah bersama.</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Menu Utama</h3>
+                <a href="{% url 'public_landing' %}">🏠 Beranda</a>
+                <a href="{% url 'public_info' %}">ℹ️ Informasi</a>
+                <a href="{% url 'public_buat_laporan' %}">📝 Buat Laporan</a>
+                <a href="{% url 'public_tracking' %}">🔍 Tracking</a>
+                <a href="{% url 'public_info' %}?tab=faq">❓ FAQ</a>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Kontak Kami</h3>
+                <p><i class="fa-solid fa-envelope"></i> support@laporwarga.id</p>
+                <p><i class="fa-solid fa-phone"></i> (021) 1234-5678</p>
+                <p><i class="fa-solid fa-clock"></i> Senin - Jumat: 08:00 - 17:00</p>
+                <p><i class="fa-solid fa-location-dot"></i> Jalan Bunga Cempaka No. 54-A, Kelurahan Selayang II, Kecamatan Medan Selayang, Kota Medan, Sumatera Utara</p>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; <span id="currentYear"></span> LaporWarga. Dibuat dengan ❤️ untuk Medan Selayang yang lebih baik. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Set tahun otomatis
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Hamburger toggle
+        function toggleMenu() {
+            const hamburger = document.getElementById('hamburger');
+            const navMenu = document.getElementById('navMenu');
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+            document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+        }
+
+        // Close menu on link click
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('hamburger').classList.remove('active');
+                document.getElementById('navMenu').classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+    </script>
+</body>
+</html>
+

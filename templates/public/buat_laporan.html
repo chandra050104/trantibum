@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buat Laporan - LaporWarga</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        /* ========== CSS RESET & VARIABLES ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --biru: #2563eb;
+            --biru-tua: #1e40af;
+            --hitam: #111827;
+            --hitam-abu: #1f2937;
+            --ungu: #7c3aed;
+            --ungu-muda: #8b5cf6;
+            --putih: #ffffff;
+            --merah: #ef4444;
+            --hijau: #10b981;
+            --kuning: #f59e0b;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+            --transition: all 0.3s ease;
+        }
+
+        /* ========== ANIMASI BACKGROUND ========== */
+        @keyframes gradientShift {
+            0% { background-color: #2563eb; }
+            20% { background-color: #1e40af; }
+            40% { background-color: #111827; }
+            60% { background-color: #1f2937; }
+            80% { background-color: #7c3aed; }
+            100% { background-color: #2563eb; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========== BODY ========== */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--putih);
+            animation: gradientShift 15s infinite;
+            transition: background-color 1s ease;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ========== NAVBAR ========== */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--putih);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .navbar-logo span {
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ========== HAMBURGER ========== */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            z-index: 1001;
+            padding: 8px;
+            gap: 6px;
+        }
+
+        .hamburger span {
+            width: 30px;
+            height: 3px;
+            background: var(--putih);
+            border-radius: 3px;
+            transition: var(--transition);
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+
+        /* ========== NAV MENU ========== */
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            color: var(--putih);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.6rem 1.2rem;
+            border-radius: 10px;
+            transition: var(--transition);
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .nav-menu a.active {
+            background: rgba(255, 255, 255, 0.2);
+            font-weight: 600;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--putih);
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* ========== MAIN CONTAINER ========== */
+        .main-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        /* ========== BACK LINK ========== */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            color: var(--putih);
+            transform: translateX(-5px);
+        }
+
+        /* ========== PAGE HEADER ========== */
+        .page-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #ffffff, #c7d2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-header p {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 1.1rem;
+        }
+
+        /* ========== MESSAGES ========== */
+        .messages {
+            margin-bottom: 2rem;
+        }
+
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            animation: slideDown 0.5s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.25);
+            border: 1px solid rgba(16, 185, 129, 0.5);
+            color: #6ee7b7;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.25);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            color: #fca5a5;
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.25);
+            border: 1px solid rgba(245, 158, 11, 0.5);
+            color: #fcd34d;
+        }
+
+        /* ========== FORM CARD ========== */
+        .form-card {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 2.5rem;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* ========== FORM GROUP ========== */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .required {
+            color: #f87171;
+            margin-left: 2px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1.2rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            color: var(--putih);
+            font-size: 1rem;
+            transition: var(--transition);
+            font-family: inherit;
+            outline: none;
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.05);
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        .form-control:disabled,
+        .form-control[readonly] {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 140px;
+            line-height: 1.6;
+        }
+
+        select.form-control {
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
+        }
+
+        select.form-control option {
+            background: #1f2937;
+            color: white;
+        }
+
+        input[type="file"].form-control {
+            padding: 0.6rem 1.2rem;
+            cursor: pointer;
+        }
+
+        input[type="file"].form-control::file-selector-button {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            margin-right: 1rem;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        input[type="file"].form-control::file-selector-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .form-hint {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.45);
+            margin-top: 0.4rem;
+        }
+
+        /* ========== FORM ROW ========== */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* ========== MAP CONTAINER ========== */
+        .map-wrapper {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            margin-bottom: 0.5rem;
+            position: relative;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+        }
+
+        #map {
+            width: 100%;
+            height: 400px;
+            z-index: 1;
+        }
+
+        .map-instruction {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            pointer-events: none;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .coordinates-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .coordinates-display strong {
+            color: white;
+        }
+
+        /* ========== BUTTONS ========== */
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #ffffff, #e0e7ff);
+            color: #1e40af;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-family: inherit;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+            background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-reset {
+            width: 100%;
+            padding: 0.8rem;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.8rem;
+            font-family: inherit;
+        }
+
+        .btn-reset:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* ========== FOOTER ========== */
+        .footer {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            margin-top: 3rem;
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 0.9rem;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                flex-direction: column;
+                background: rgba(0, 0, 0, 0.95);
+                backdrop-filter: blur(30px);
+                -webkit-backdrop-filter: blur(30px);
+                width: 100%;
+                height: 100vh;
+                justify-content: center;
+                align-items: center;
+                transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                gap: 2rem;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .nav-menu a {
+                font-size: 1.2rem;
+            }
+
+            .main-container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+
+            .form-card {
+                padding: 1.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+
+            #map {
+                height: 300px;
+            }
+
+            .map-instruction {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .navbar-logo {
+                font-size: 1.4rem;
+            }
+
+            .form-card {
+                padding: 1.2rem;
+            }
+
+            #map {
+                height: 250px;
+            }
+
+            .section-title {
+                font-size: 1rem;
+            }
+        }
+        
+        /* Mobile map fix */
+        .leaflet-container {
+            touch-action: pan-x pan-y pinch-zoom;
+        }
+        .leaflet-marker-icon,
+        .leaflet-marker-shadow {
+            touch-action: none;
+        }
+        .map-wrapper {
+            touch-action: manipulation;
+        }
+        #map {
+            touch-action: pan-x pan-y pinch-zoom;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- ========== NAVBAR ========== -->
+    <nav class="navbar">
+        <a href="{% url 'public_landing' %}" class="navbar-logo">
+            📍 <span>LaporWarga</span>
+        </a>
+        
+        <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="{% url 'public_landing' %}">🏠 Beranda</a></li>
+            <li><a href="{% url 'public_info' %}">ℹ️ Info</a></li>
+            <li><a href="{% url 'public_buat_laporan' %}" class="active">📝 Buat Laporan</a></li>
+            <li><a href="{% url 'public_tracking' %}">🔍 Tracking</a></li>
+            <li><a href="{% url 'masyarakat_dashboard' %}">📊 Dashboard</a></li>
+            <li><a href="{% url 'auth_logout' %}" class="btn-logout">🚪 Logout</a></li>
+        </ul>
+    </nav>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <div class="main-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>📝 Buat Laporan Baru</h1>
+            <p>Laporkan gangguan Trantibum di wilayah Kecamatan Medan Selayang</p>
+        </div>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {% if message.tags == 'success' %}✅{% elif message.tags == 'error' %}❌{% elif message.tags == 'warning' %}⚠️{% endif %}
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Form Card -->
+        <div class="form-card">
+            <form method="POST" enctype="multipart/form-data" id="laporanForm">
+                {% csrf_token %}
+                
+                <!-- SECTION: Informasi Laporan -->
+                <div class="form-section">
+                    <div class="section-title">📋 Informasi Laporan</div>
+                    
+                    <!-- Judul -->
+                    <div class="form-group">
+                        <label for="judul">
+                            Judul Laporan <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            id="judul" 
+                            name="judul" 
+                            class="form-control" 
+                            placeholder="Contoh: Jalan Berlubang di Depan Kantor Camat Medan Selayang" 
+                            required 
+                            maxlength="200"
+                        >
+                        <div class="form-hint">Maksimal 200 karakter</div>
+                    </div>
+
+                    <!-- Kategori -->
+                    <div class="form-group">
+                        <label for="kategori">
+                            Kategori Gangguan <span class="required">*</span>
+                        </label>
+                        <select id="kategori" name="kategori" class="form-control" required>
+                            <option value="">-- Pilih Kategori --</option>
+                            <option value="KEAMANAN">Gangguan Keamanan</option>
+                            <option value="KETERTIBAN">Gangguan Ketertiban Umum</option>
+                            <option value="PENYAKIT_MSY">Miras, Narkoba & Judi</option>
+                            <option value="BENCANA">Bencana / Kejadian Khusus</option>
+                            <option value="PENEGAKAN_PERDA">Pelanggaran Perda</option>
+                            <option value="LAINNYA">Lainnya</option>
+                        </select>
+                    </div>
+
+                    <!-- Deskripsi -->
+                    <div class="form-group">
+                        <label for="deskripsi">
+                            Deskripsi Masalah <span class="required">*</span>
+                        </label>
+                        <textarea 
+                            id="deskripsi" 
+                            name="deskripsi" 
+                            class="form-control" 
+                            placeholder="Jelaskan secara detail gangguan yang terjadi:&#10;&#10;- Apa yang terjadi?&#10;- Sejak kapan kejadian berlangsung?&#10;- Di mana lokasi persisnya?&#10;- Bagaimana dampaknya terhadap masyarakat sekitar?&#10;- Apakah ada saksi atau bukti pendukung?" 
+                            required
+                        ></textarea>
+                        <div class="form-hint">Semakin lengkap deskripsi, semakin cepat proses verifikasi</div>
+                    </div>
+                </div>
+
+                <!-- SECTION: Lokasi Kejadian -->
+                <div class="form-section">
+                    <div class="section-title">📍 Lokasi Kejadian</div>
+
+                    <div class="form-group">
+                        <label>Cari Alamat</label>
+                        <div style="display:flex;gap:0.5rem;">
+                            <input type="text" id="searchAddress" class="form-control" placeholder="Ketik alamat lengkap..." style="flex:1;">
+                            <button type="button" id="searchBtn" class="btn-submit" style="width:auto;padding:0.7rem 1.2rem;font-size:0.9rem;white-space:nowrap;flex-shrink:0;">🔍 Cari</button>
+                            <button type="button" id="locateBtn" class="btn-submit" style="width:auto;padding:0.7rem 1rem;font-size:0.9rem;white-space:nowrap;flex-shrink:0;background:linear-gradient(135deg,#10b981,#059669);" title="Kembali ke lokasi saya">📍</button>
+                        </div>
+                        <div class="form-hint">Ketik alamat, map akan otomatis menuju lokasi</div>
+                    </div>
+                    
+                    <!-- Map -->
+                    <div class="form-group">
+                        <label>
+                            Pilih Lokasi di Peta <span class="required">*</span>
+                        </label>
+                        <div class="map-wrapper">
+                            <div class="map-instruction">👆 Geser pin ke lokasi kejadian yang tepat</div>
+                            <div id="map"></div>
+                        </div>
+                        <div class="form-hint">Klik pada peta untuk menempatkan pin, lalu geser ke lokasi yang tepat</div>
+                    </div>
+
+                    <!-- Koordinat -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="latitude">
+                                Latitude <span class="required">*</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="latitude" 
+                                name="latitude" 
+                                class="form-control" 
+                                placeholder="Otomatis terisi dari peta" 
+                                required 
+                                readonly
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="longitude">
+                                Longitude <span class="required">*</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="longitude" 
+                                name="longitude" 
+                                class="form-control" 
+                                placeholder="Otomatis terisi dari peta" 
+                                required 
+                                readonly
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Koordinat Display -->
+                    <div class="coordinates-display" id="coordsDisplay" style="display: none;">
+                        📍 Koordinat terpilih: 
+                        <strong id="latDisplay">-</strong>, 
+                        <strong id="lngDisplay">-</strong>
+                    </div>
+
+                    <!-- Alamat -->
+                    <div class="form-group">
+                        <label for="alamat_kejadian">Alamat Lengkap</label>
+                        <input 
+                            type="text" 
+                            id="alamat_kejadian" 
+                            name="alamat_kejadian" 
+                            class="form-control" 
+                            placeholder="Contoh: Jl. Bunga Wijaya Kusuma No. 10, Kel. Asam Kumbang, Kec. Medan Selayang"
+                        >
+                        <div class="form-hint">Isi alamat selengkap mungkin untuk memudahkan petugas</div>
+                    </div>
+                </div>
+
+                <!-- SECTION: Bukti Pendukung -->
+                <div class="form-section">
+                    <div class="section-title">📸 Bukti Pendukung</div>
+                    
+                    <div class="form-group">
+                        <label for="foto">Foto / Gambar</label>
+                        <input 
+                            type="file" 
+                            id="foto" 
+                            name="foto" 
+                            class="form-control" 
+                            accept="image/jpeg,image/png,image/gif"
+                        >
+                        <div class="form-hint">Format: JPG, PNG, GIF. Ukuran maksimal 5MB. Foto akan membantu proses verifikasi.</div>
+                    </div>
+                </div>
+
+                <!-- Tombol Submit -->
+                <button type="submit" class="btn-submit">
+                    🚀 Kirim Laporan
+                </button>
+                
+                <button type="reset" class="btn-reset" onclick="resetMapMarker()">
+                    🔄 Reset Form
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <p>&copy; <span id="currentYear"></span> Sistem Informasi Manajemen Pelaporan Trantibum - Kecamatan Medan Selayang. All rights reserved.</p>
+    </footer>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        function toggleMenu() {
+            const hamburger = document.getElementById('hamburger');
+            const navMenu = document.getElementById('navMenu');
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+            document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+        }
+
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('hamburger').classList.remove('active');
+                document.getElementById('navMenu').classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // Map
+        const defaultLat = 3.5833, defaultLng = 98.6333, defaultZoom = 15;
+        const map = L.map('map', {
+            center: [defaultLat, defaultLng], zoom: defaultZoom,
+            dragging: true, tap: true, tapTolerance: 15,
+            touchZoom: true, scrollWheelZoom: true,
+            doubleClickZoom: true, boxZoom: true, bounceAtZoomLimits: false,
+        }).setView([defaultLat, defaultLng], defaultZoom);
+        map.getContainer().style.touchAction = 'pan-x pan-y pinch-zoom';
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap &copy; CARTO', subdomains: 'abcd', maxZoom: 19
+        }).addTo(map);
+
+        const markerIcon = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+        });
+
+        let marker = L.marker([defaultLat, defaultLng], { draggable: true, icon: markerIcon }).addTo(map);
+        updateCoordinates(defaultLat, defaultLng);
+
+        // Geolocation
+        let userSearched = false;
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                function(p) {
+                    if (!userSearched) {
+                        marker.setLatLng([p.coords.latitude, p.coords.longitude]);
+                        map.setView([p.coords.latitude, p.coords.longitude], 17);
+                        updateCoordinates(p.coords.latitude, p.coords.longitude);
+                    }
+                },
+                function() { console.log('Geolocation gagal'); },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            );
+        }
+
+        // Geocoding
+        function searchAddress() {
+            const address = document.getElementById('searchAddress').value.trim();
+            if (!address) { alert('⚠️ Silakan masukkan alamat!'); return; }
+            
+            userSearched = true;
+            const btn = document.getElementById('searchBtn');
+            const orig = btn.textContent;
+            btn.textContent = '⏳...'; btn.disabled = true;
+
+            fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(address + ', Medan, Indonesia') + '&limit=1', {
+                headers: { 'User-Agent': 'LaporWarga/1.0' }
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data && data.length > 0) {
+                    marker.setLatLng([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
+                    map.setView([parseFloat(data[0].lat), parseFloat(data[0].lon)], 18);
+                    updateCoordinates(parseFloat(data[0].lat), parseFloat(data[0].lon));
+                    document.getElementById('alamat_kejadian').value = data[0].display_name;
+                    document.getElementById('coordsDisplay').style.display = 'flex';
+                    btn.textContent = orig; btn.disabled = false;
+                } else {
+                    return fetch('https://photon.komoot.io/api/?q=' + encodeURIComponent(address + ' Medan Indonesia') + '&limit=1');
+                }
+            })
+            .then(r => r ? r.json() : null)
+            .then(d => {
+                if (d && d.features && d.features.length > 0) {
+                    var c = d.features[0].geometry.coordinates;
+                    marker.setLatLng([c[1], c[0]]);
+                    map.setView([c[1], c[0]], 18);
+                    updateCoordinates(c[1], c[0]);
+                    document.getElementById('alamat_kejadian').value = d.features[0].properties.name || address;
+                    document.getElementById('coordsDisplay').style.display = 'flex';
+                }
+                btn.textContent = orig; btn.disabled = false;
+            })
+            .catch(() => { btn.textContent = orig; btn.disabled = false; alert('⚠️ Gagal mencari.'); });
+        }
+
+        // Event listeners untuk tombol (DI LUAR FUNCTION)
+        document.getElementById('searchBtn').addEventListener('click', searchAddress);
+        document.getElementById('searchBtn').addEventListener('touchend', function(e) { e.preventDefault(); searchAddress(); });
+        document.getElementById('searchAddress').addEventListener('keypress', function(e) { if (e.key === 'Enter') { e.preventDefault(); searchAddress(); } });
+
+        marker.on('dragend', function(e) { var p = marker.getLatLng(); updateCoordinates(p.lat, p.lng); });
+        map.on('click', function(e) { marker.setLatLng(e.latlng); updateCoordinates(e.latlng.lat, e.latlng.lng); });
+
+        function updateCoordinates(lat, lng) {
+            document.getElementById('latitude').value = lat.toFixed(7);
+            document.getElementById('longitude').value = lng.toFixed(7);
+            document.getElementById('latDisplay').textContent = lat.toFixed(7);
+            document.getElementById('lngDisplay').textContent = lng.toFixed(7);
+            document.getElementById('coordsDisplay').style.display = 'flex';
+        }
+
+        function resetMapMarker() {
+            marker.setLatLng([defaultLat, defaultLng]);
+            map.setView([defaultLat, defaultLng], defaultZoom);
+            updateCoordinates(defaultLat, defaultLng);
+        }
+
+        setTimeout(() => map.invalidateSize(), 100);
+        window.addEventListener('resize', () => map.invalidateSize());
+
+        document.getElementById('laporanForm').addEventListener('submit', function(e) {
+            const lat = document.getElementById('latitude').value;
+            const lng = document.getElementById('longitude').value;
+            if (!lat || !lng) { e.preventDefault(); alert('⚠️ Pilih lokasi di peta!'); return false; }
+            const ln = parseFloat(lat), lg = parseFloat(lng);
+            if (isNaN(ln) || isNaN(lg)) { e.preventDefault(); alert('⚠️ Koordinat tidak valid!'); return false; }
+            if (ln < -90 || ln > 90 || lg < -180 || lg > 180) { e.preventDefault(); alert('⚠️ Koordinat di luar jangkauan!'); return false; }
+        });
+
+        const judulInput = document.getElementById('judul');
+        const judulHint = judulInput.nextElementSibling;
+        judulInput.addEventListener('input', function() {
+            const remaining = 200 - this.value.length;
+            judulHint.style.color = remaining <= 20 ? '#fbbf24' : 'rgba(255,255,255,0.45)';
+            judulHint.textContent = remaining <= 20 ? `Sisa ${remaining} karakter` : 'Maksimal 200 karakter';
+        });
+
+        document.getElementById('locateBtn').addEventListener('click', function() {
+            if (navigator.geolocation) {
+                this.textContent = '⏳';
+                this.disabled = true;
+                navigator.geolocation.getCurrentPosition(
+                    function(p) {
+                        marker.setLatLng([p.coords.latitude, p.coords.longitude]);
+                        map.setView([p.coords.latitude, p.coords.longitude], 17);
+                        updateCoordinates(p.coords.latitude, p.coords.longitude);
+                        document.getElementById('locateBtn').textContent = '📍';
+                        document.getElementById('locateBtn').disabled = false;
+                    },
+                    function() {
+                        alert('⚠️ Gagal mendeteksi lokasi!');
+                        document.getElementById('locateBtn').textContent = '📍';
+                        document.getElementById('locateBtn').disabled = false;
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
+            } else {
+                alert('⚠️ Geolocation tidak didukung browser ini.');
+            }
+        });
+    </script>
+</body>
+</html>
+
+cari

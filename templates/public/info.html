@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Info - LaporWarga</title>
+    
+    <style>
+        /* ========== CSS RESET & VARIABLES ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --biru: #2563eb;
+            --biru-tua: #1e40af;
+            --hitam: #111827;
+            --hitam-abu: #1f2937;
+            --ungu: #7c3aed;
+            --putih: #ffffff;
+            --merah: #ef4444;
+            --hijau: #10b981;
+            --kuning: #f59e0b;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+            --transition: all 0.3s ease;
+        }
+
+        /* ========== ANIMASI ========== */
+        @keyframes gradientShift {
+            0% { background-color: #2563eb; }
+            20% { background-color: #1e40af; }
+            40% { background-color: #111827; }
+            60% { background-color: #1f2937; }
+            80% { background-color: #7c3aed; }
+            100% { background-color: #2563eb; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* ========== BODY ========== */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--putih);
+            animation: gradientShift 15s infinite;
+            transition: background-color 1s ease;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ========== NAVBAR ========== */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--putih);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .navbar-logo span {
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            z-index: 1001;
+            padding: 8px;
+            gap: 6px;
+        }
+
+        .hamburger span {
+            width: 30px;
+            height: 3px;
+            background: var(--putih);
+            border-radius: 3px;
+            transition: var(--transition);
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            color: var(--putih);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.6rem 1.2rem;
+            border-radius: 10px;
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .nav-menu a.active {
+            background: rgba(255, 255, 255, 0.2);
+            font-weight: 600;
+        }
+
+        .btn-login {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--putih);
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-login:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn-register {
+            background: rgba(255, 255, 255, 0.15);
+            color: #1e40af;
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-register:hover {
+            background: #e0e7ff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--putih);
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* ========== MAIN CONTAINER ========== */
+        .main-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            color: var(--putih);
+            transform: translateX(-5px);
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #ffffff, #c7d2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-header p {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 1.1rem;
+        }
+
+        /* ========== TAB NAVIGATION ========== */
+        .tab-nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.5rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .tab-btn {
+            padding: 0.7rem 1.5rem;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.6);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            font-family: inherit;
+            white-space: nowrap;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .tab-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        /* ========== TAB CONTENT ========== */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* ========== CONTENT CARD ========== */
+        .content-card {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .content-card:hover {
+            background: rgba(255, 255, 255, 0.09);
+        }
+
+        .content-card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .content-card p {
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.8;
+            margin-bottom: 0.8rem;
+        }
+
+        /* ========== BERITA / NEWS CARDS ========== */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .news-card {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .news-image {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, rgba(96, 165, 250, 0.3), rgba(167, 139, 250, 0.3));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .news-body {
+            padding: 1.5rem;
+        }
+
+        .news-date {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 0.5rem;
+        }
+
+        .news-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .news-excerpt {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* ========== FAQ ========== */
+        .faq-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-question {
+            width: 100%;
+            padding: 1.2rem 0;
+            background: transparent;
+            border: none;
+            color: var(--putih);
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: left;
+            transition: var(--transition);
+            font-family: inherit;
+            gap: 1rem;
+        }
+
+        .faq-question:hover {
+            color: #93c5fd;
+        }
+
+        .faq-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .faq-item.open .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 500px;
+            padding-bottom: 1.2rem;
+        }
+
+        .faq-answer p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.8;
+        }
+
+        /* ========== KONTAK DARURAT ========== */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .contact-card {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .contact-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-card h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-number {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #60a5fa;
+            margin-bottom: 0.3rem;
+        }
+
+        .contact-desc {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        .contact-card.emergency {
+            border-color: rgba(239, 68, 68, 0.4);
+            animation: pulse 3s infinite;
+        }
+
+        .contact-card.emergency .contact-number {
+            color: #f87171;
+        }
+
+        /* ========== EDUKASI ========== */
+        .edu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .edu-card {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .edu-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .edu-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .edu-card h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+        }
+
+        .edu-card p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .edu-tips {
+            list-style: none;
+            text-align: left;
+            margin-top: 1rem;
+        }
+
+        .edu-tips li {
+            padding: 0.5rem 0;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .edu-tips li::before {
+            content: '✅';
+        }
+
+        /* ========== FOOTER ========== */
+        .footer {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            margin-top: 3rem;
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 0.9rem;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                flex-direction: column;
+                background: rgba(0, 0, 0, 0.95);
+                backdrop-filter: blur(30px);
+                -webkit-backdrop-filter: blur(30px);
+                width: 100%;
+                height: 100vh;
+                justify-content: center;
+                align-items: center;
+                transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                gap: 2rem;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .nav-menu a {
+                font-size: 1.2rem;
+            }
+
+            .main-container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .tab-nav {
+                gap: 0.3rem;
+            }
+
+            .tab-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .news-grid,
+            .contact-grid,
+            .edu-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .navbar-logo {
+                font-size: 1.4rem;
+            }
+
+            .content-card {
+                padding: 1.2rem;
+            }
+
+            .faq-question {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ========== NAVBAR ========== -->
+    <nav class="navbar">
+        <a href="{% url 'public_landing' %}" class="navbar-logo">
+            📍 <span>LaporWarga</span>
+        </a>
+        
+        <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="{% url 'public_landing' %}">🏠 Beranda</a></li>
+            <li><a href="{% url 'public_info' %}" class="active">ℹ️ Info</a></li>
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'public_buat_laporan' %}">📝 Buat Laporan</a></li>
+                <li><a href="{% url 'public_tracking' %}">🔍 Tracking</a></li>
+                <li><a href="{% url 'masyarakat_dashboard' %}">📊 Dashboard</a></li>
+                <li><a href="{% url 'auth_logout' %}" class="btn-logout">🚪 Logout</a></li>
+            {% else %}
+                <li><a href="{% url 'auth_login' %}" class="btn-login">🔑 Login</a></li>
+                <li><a href="{% url 'auth_register' %}" class="btn-register">✨ Daftar</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <div class="main-container">
+        <div class="page-header">
+            <h1>ℹ️ Pusat Informasi</h1>
+            <p>Berita terkini, FAQ, kontak darurat, dan edukasi untuk warga Kecamatan Medan Selayang</p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <a href="?tab=berita" class="tab-btn {% if active_tab == 'berita' or not active_tab %}active{% endif %}">
+                📰 Berita
+            </a>
+            <a href="?tab=faq" class="tab-btn {% if active_tab == 'faq' %}active{% endif %}">
+                ❓ FAQ
+            </a>
+            <a href="?tab=kontak" class="tab-btn {% if active_tab == 'kontak' %}active{% endif %}">
+                📞 Kontak Darurat
+            </a>
+            <a href="?tab=edukasi" class="tab-btn {% if active_tab == 'edukasi' %}active{% endif %}">
+                📚 Edukasi
+            </a>
+        </div>
+
+        <!-- ==================== TAB: BERITA ==================== -->
+        <div class="tab-content {% if active_tab == 'berita' or not active_tab %}active{% endif %}" id="tab-berita">
+            <div class="news-grid">
+                <!-- Berita 1 -->
+                <div class="news-card">
+                    <div class="news-image">📢</div>
+                    <div class="news-body">
+                        <div class="news-date">📅 15 Januari 2025</div>
+                        <h3 class="news-title">Peningkatan Keamanan Lingkungan di Medan Selayang</h3>
+                        <p class="news-excerpt">Pemerintah Kecamatan Medan Selayang meluncurkan program baru untuk meningkatkan keamanan lingkungan dengan melibatkan partisipasi aktif masyarakat melalui aplikasi LaporWarga.</p>
+                    </div>
+                </div>
+
+                <!-- Berita 2 -->
+                <div class="news-card">
+                    <div class="news-image">🏗️</div>
+                    <div class="news-body">
+                        <div class="news-date">📅 10 Januari 2025</div>
+                        <h3 class="news-title">Perbaikan Infrastruktur Jalan di Kelurahan Asam Kumbang</h3>
+                        <p class="news-excerpt">Dinas PU menargetkan perbaikan 5 titik jalan rusak di Kelurahan Asam Kumbang berdasarkan laporan warga melalui sistem LaporWarga.</p>
+                    </div>
+                </div>
+
+                <!-- Berita 3 -->
+                <div class="news-card">
+                    <div class="news-image">🌿</div>
+                    <div class="news-body">
+                        <div class="news-date">📅 5 Januari 2025</div>
+                        <h3 class="news-title">Gerakan Kebersihan "Jumat Bersih" di Seluruh Kelurahan</h3>
+                        <p class="news-excerpt">Camat Medan Selayang mengajak seluruh warga berpartisipasi dalam gerakan Jumat Bersih untuk menciptakan lingkungan yang sehat dan nyaman.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB: FAQ ==================== -->
+        <div class="tab-content {% if active_tab == 'faq' %}active{% endif %}" id="tab-faq">
+            <div class="content-card">
+                <h3>❓ Pertanyaan yang Sering Diajukan</h3>
+                
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        Bagaimana cara membuat laporan?
+                        <span class="faq-icon">➕</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Anda dapat membuat laporan melalui menu "Buat Laporan" setelah login. Isi form dengan judul, kategori, deskripsi, dan tentukan lokasi di peta. Laporan akan langsung masuk ke sistem untuk diverifikasi oleh admin.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        Berapa lama laporan diproses?
+                        <span class="faq-icon">➕</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Laporan akan diverifikasi dalam waktu 1x24 jam oleh admin. Setelah diverifikasi, petugas akan ditugaskan dan proses penanganan dimulai. Waktu penyelesaian tergantung pada jenis dan tingkat keparahan gangguan.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        Apakah identitas pelapor dirahasiakan?
+                        <span class="faq-icon">➕</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Ya, identitas pelapor hanya diketahui oleh admin sistem. Petugas lapangan hanya menerima informasi laporan tanpa data pribadi pelapor. Kami menjaga kerahasiaan data sesuai kebijakan privasi yang berlaku.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        Bagaimana cara melacak status laporan?
+                        <span class="faq-icon">➕</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Gunakan menu "Tracking" dan masukkan ID laporan yang Anda terima saat membuat laporan. Anda dapat melihat status terkini dan riwayat penanganan secara real-time.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        Apa yang harus dilakukan jika laporan ditolak?
+                        <span class="faq-icon">➕</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Jika laporan ditolak, Anda akan menerima notifikasi beserta alasan penolakan. Anda dapat membuat laporan baru dengan melengkapi informasi yang kurang atau menghubungi admin untuk klarifikasi lebih lanjut.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        Apakah ada batasan jumlah laporan?
+                        <span class="faq-icon">➕</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Tidak ada batasan jumlah laporan. Anda dapat membuat laporan sebanyak yang diperlukan. Namun, pastikan setiap laporan valid dan tidak duplikat untuk mempercepat proses verifikasi.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB: KONTAK DARURAT ==================== -->
+        <div class="tab-content {% if active_tab == 'kontak' %}active{% endif %}" id="tab-kontak">
+            <div class="contact-grid">
+                <!-- Polisi -->
+                <div class="contact-card emergency">
+                    <div class="contact-icon">🚔</div>
+                    <h3>Polisi</h3>
+                    <div class="contact-number">110</div>
+                    <p class="contact-desc">Layanan darurat kepolisian 24 jam</p>
+                </div>
+
+                <!-- Ambulans -->
+                <div class="contact-card emergency">
+                    <div class="contact-icon">🚑</div>
+                    <h3>Ambulans / Medis</h3>
+                    <div class="contact-number">119</div>
+                    <p class="contact-desc">Layanan darurat medis 24 jam</p>
+                </div>
+
+                <!-- Pemadam Kebakaran -->
+                <div class="contact-card emergency">
+                    <div class="contact-icon">🚒</div>
+                    <h3>Pemadam Kebakaran</h3>
+                    <div class="contact-number">113</div>
+                    <p class="contact-desc">Layanan darurat kebakaran 24 jam</p>
+                </div>
+
+                <!-- Kantor Camat -->
+                <div class="contact-card">
+                    <div class="contact-icon">🏛️</div>
+                    <h3>Kantor Camat Medan Selayang</h3>
+                    <div class="contact-number">(061) 822-5678</div>
+                    <p class="contact-desc">Jl. Bunga Wijaya Kusuma No. 1, Medan Selayang<br>Senin-Jumat: 08:00-16:00</p>
+                </div>
+
+                <!-- Satpol PP -->
+                <div class="contact-card">
+                    <div class="contact-icon">👮</div>
+                    <h3>Satpol PP Kecamatan</h3>
+                    <div class="contact-number">(061) 822-5679</div>
+                    <p class="contact-desc">Penegakan Perda dan Trantibum<br>Senin-Jumat: 08:00-16:00</p>
+                </div>
+
+                <!-- Call Center LaporWarga -->
+                <div class="contact-card emergency">
+                    <div class="contact-icon">🚔</div>
+                    <h3>Call Center Trantibum</h3>
+                    <div class="contact-number">+6285282962318</div>
+                    <div style="display:flex;gap:0.5rem;justify-content:center;margin-top:0.8rem;">
+                        <a href="tel:+6285282962318" style="background:rgba(220,38,38,0.2);color:#f87171;padding:0.5rem 1rem;border-radius:8px;text-decoration:none;font-weight:600;">📞 Telepon Sekarang</a>
+                        <a href="https://wa.me/+6285282962318" target="_blank" style="background:rgba(37,211,102,0.2);color:#25d366;padding:0.5rem 1rem;border-radius:8px;text-decoration:none;font-weight:600;">💬 Chat WhatsApp</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB: EDUKASI ==================== -->
+        <div class="tab-content {% if active_tab == 'edukasi' %}active{% endif %}" id="tab-edukasi">
+            <div class="edu-grid">
+                <!-- Keamanan Lingkungan -->
+                <div class="edu-card">
+                    <div class="edu-icon">🏘️</div>
+                    <h3>Keamanan Lingkungan</h3>
+                    <p>Tips menjaga keamanan lingkungan tempat tinggal Anda</p>
+                    <ul class="edu-tips">
+                        <li>Aktifkan sistem keamanan lingkungan (poskamling)</li>
+                        <li>Kenali tetangga dan bangun komunikasi</li>
+                        <li>Pasang penerangan yang cukup di area rawan</li>
+                        <li>Laporkan aktivitas mencurigakan</li>
+                        <li>Amankan kendaraan dengan kunci ganda</li>
+                    </ul>
+                </div>
+
+                <!-- Ketertiban Umum -->
+                <div class="edu-card">
+                    <div class="edu-icon">📋</div>
+                    <h3>Ketertiban Umum</h3>
+                    <p>Memahami aturan ketertiban umum di wilayah kecamatan</p>
+                    <ul class="edu-tips">
+                        <li>Patuhi jam malam yang ditetapkan</li>
+                        <li>Tidak membuang sampah sembarangan</li>
+                        <li>Jaga ketenangan lingkungan (tidak bising)</li>
+                        <li>Hormati fasilitas umum</li>
+                        <li>Ikuti aturan parkir yang berlaku</li>
+                    </ul>
+                </div>
+
+                <!-- Kebersihan -->
+                <div class="edu-card">
+                    <div class="edu-icon">🧹</div>
+                    <h3>Kebersihan Lingkungan</h3>
+                    <p>Edukasi pengelolaan sampah dan kebersihan</p>
+                    <ul class="edu-tips">
+                        <li>Pilah sampah organik dan anorganik</li>
+                        <li>Kurangi penggunaan plastik sekali pakai</li>
+                        <li>Buang sampah pada tempat dan waktu yang ditentukan</li>
+                        <li>Ikut serta dalam kegiatan gotong royong</li>
+                        <li>Laporkan tumpukan sampah liar</li>
+                    </ul>
+                </div>
+
+                <!-- Pelaporan Efektif -->
+                <div class="edu-card">
+                    <div class="edu-icon">📸</div>
+                    <h3>Tips Pelaporan Efektif</h3>
+                    <p>Cara membuat laporan yang baik dan benar</p>
+                    <ul class="edu-tips">
+                        <li>Ambil foto yang jelas sebagai bukti</li>
+                        <li>Tulis deskripsi lengkap dan spesifik</li>
+                        <li>Tentukan lokasi dengan akurat di peta</li>
+                        <li>Sertakan waktu kejadian</li>
+                        <li>Gunakan bahasa yang sopan dan jelas</li>
+                    </ul>
+                </div>
+
+                <!-- Hak & Kewajiban -->
+                <div class="edu-card">
+                    <div class="edu-icon">⚖️</div>
+                    <h3>Hak & Kewajiban Warga</h3>
+                    <p>Memahami hak dan kewajiban sebagai warga</p>
+                    <ul class="edu-tips">
+                        <li>Hak mendapatkan lingkungan aman dan nyaman</li>
+                        <li>Hak melaporkan gangguan tanpa intimidasi</li>
+                        <li>Kewajiban menjaga ketertiban umum</li>
+                        <li>Kewajiban berpartisipasi dalam keamanan</li>
+                        <li>Hak mendapatkan informasi penanganan laporan</li>
+                    </ul>
+                </div>
+
+                <!-- Pencegahan Bencana -->
+                <div class="edu-card">
+                    <div class="edu-icon">⚠️</div>
+                    <h3>Kesiapsiagaan Bencana</h3>
+                    <p>Tips menghadapi situasi darurat dan bencana</p>
+                    <ul class="edu-tips">
+                        <li>Kenali titik kumpul evakuasi terdekat</li>
+                        <li>Siapkan nomor darurat di ponsel</li>
+                        <li>Sediakan P3K di rumah</li>
+                        <li>Ikuti informasi resmi dari pemerintah</li>
+                        <li>Bantu tetangga yang membutuhkan</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <p>&copy; <span id="currentYear"></span> Sistem Informasi Manajemen Pelaporan Trantibum - Kecamatan Medan Selayang. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Set current year
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Hamburger menu
+        function toggleMenu() {
+            const hamburger = document.getElementById('hamburger');
+            const navMenu = document.getElementById('navMenu');
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+            document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+        }
+
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('hamburger').classList.remove('active');
+                document.getElementById('navMenu').classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // FAQ toggle
+        function toggleFAQ(button) {
+            const faqItem = button.parentElement;
+            const isOpen = faqItem.classList.contains('open');
+            
+            // Close all FAQ
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('open');
+                item.querySelector('.faq-icon').textContent = '➕';
+            });
+            
+            // Open clicked FAQ if not already open
+            if (!isOpen) {
+                faqItem.classList.add('open');
+                button.querySelector('.faq-icon').textContent = '➖';
+            }
+            
+            // Smooth scroll to clicked FAQ
+            setTimeout(() => {
+                faqItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+
+        // Open first FAQ by default if on FAQ tab
+        {% if active_tab == 'faq' %}
+        document.querySelector('#tab-faq .faq-item:first-child .faq-question').click();
+        {% endif %}
+
+        // Tab switching via URL parameter
+        // (handled server-side, this is for client-side smoothness)
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentTab = urlParams.get('tab') || 'berita';
+        
+        // Highlight active tab button
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.getAttribute('href') === '?tab=' + currentTab) {
+                btn.classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>
