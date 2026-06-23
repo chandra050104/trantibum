@@ -11,7 +11,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-u&^dw32cv*sx944ehf2yy!!ie1buh+2&*d0yeluu@&%g^1j2rt'
-CSRF_TRUSTED_ORIGINS = ['https://trantibum-production.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://trantibum-production.up.railway.app',
+                        'https://*.up.railway.app',]
+
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
