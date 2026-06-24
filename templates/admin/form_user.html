@@ -144,14 +144,14 @@
         </div>
         <nav class="sidebar-nav">
             <div class="sidebar-nav-label">Menu Utama</div>
-            <a href="{% url 'admin_dashboard' %}"Dashboard</a>
-            <a href="{% url 'admin_semua_laporan' %}"Semua Laporan</a>
-            <a href="{% url 'admin_monitoring_peta' %}"Monitoring Peta</a>
-            <a href="{% url 'admin_manajemen_user' %}" class="active"Manajemen User</a>
-            <a href="{% url 'admin_log_aktivitas' %}"Log Aktivitas</a>
+            <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+            <a href="{% url 'admin_semua_laporan' %}">Semua Laporan</a>
+            <a href="{% url 'admin_monitoring_peta' %}">Monitoring Peta</a>
+            <a href="{% url 'admin_manajemen_user' %}">class="active"Manajemen User</a>
+            <a href="{% url 'admin_log_aktivitas' %}">Log Aktivitas</a>
             <div class="sidebar-nav-label">Lainnya</div>
             {% comment %} <a href="{% url 'public_landing' %}"Beranda</a> {% endcomment %}
-            <a href="{% url 'admin_profil' %}"Profil Saya</a>
+            <a href="{% url 'admin_profil' %}">Profil Saya</a>
         </nav>
         <div class="sidebar-footer"><a href="{% url 'auth_logout' %}" class="btn-logout">Logout</a></div>
     </aside>
