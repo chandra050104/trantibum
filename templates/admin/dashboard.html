@@ -210,23 +210,23 @@
         </div>
         <nav class="sidebar-nav">
             <div class="sidebar-nav-label">Menu Utama</div>
-            <a href="{% url 'admin_dashboard' %}" class="active"><span class="nav-icon">📊</span> Dashboard</a>
-            <a href="{% url 'admin_semua_laporan' %}"><span class="nav-icon">📋</span> Semua Laporan<span class="badge">{{ laporan_pending }}</span></a>
-            <a href="{% url 'admin_monitoring_peta' %}"><span class="nav-icon">🗺️</span> Monitoring Peta</a>
-            <a href="{% url 'admin_manajemen_user' %}"><span class="nav-icon">👥</span> Manajemen User</a>
-            <a href="{% url 'admin_log_aktivitas' %}"><span class="nav-icon">📜</span> Log Aktivitas</a>
+            <a href="{% url 'admin_dashboard' %}" class="active">Dashboard</a>
+            <a href="{% url 'admin_semua_laporan' %}"> Semua Laporan<span class="badge">{{ laporan_pending }}</span></a>
+            <a href="{% url 'admin_monitoring_peta' %}"> Monitoring Peta</a>
+            <a href="{% url 'admin_manajemen_user' %}"> Manajemen User</a>
+            <a href="{% url 'admin_log_aktivitas' %}"> Log Aktivitas</a>
             <div class="sidebar-nav-label">Lainnya</div>
-            {% comment %} <a href="{% url 'public_landing' %}"><span class="nav-icon">🏠</span> Beranda</a> {% endcomment %}
-            <a href="{% url 'admin_profil' %}"><span class="nav-icon">👤</span> Profil Saya</a>
+            {% comment %} <a href="{% url 'public_landing' %}"> Beranda</a> {% endcomment %}
+            <a href="{% url 'admin_profil' %}"> Profil Saya</a>
         </nav>
-        <div class="sidebar-footer"><a href="{% url 'auth_logout' %}" class="btn-logout">🚪 Logout</a></div>
+        <div class="sidebar-footer"><a href="{% url 'auth_logout' %}" class="btn-logout">Logout</a></div>
     </aside>
 
     <div class="main-content">
         <div class="topbar">
             <div class="topbar-left">
                 <button class="hamburger" onclick="toggleSidebar()"><span></span><span></span><span></span></button>
-                <span class="topbar-title">📊 Dashboard Admin</span>
+                <span class="topbar-title"> Dashboard Admin</span>
             </div>
             <div class="topbar-right">
                 <div style="position:relative;">
