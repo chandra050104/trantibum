@@ -691,12 +691,12 @@
         </div>
         
         <ul class="nav-menu" id="navMenu">
-            <li><a href="{% url 'public_landing' %}">🏠 Beranda</a></li>
-            <li><a href="{% url 'public_info' %}">ℹ️ Info</a></li>
-            <li><a href="{% url 'public_buat_laporan' %}">📝 Buat Laporan</a></li>
-            <li><a href="{% url 'public_tracking' %}" class="active">🔍 Tracking</a></li>
-            <li><a href="{% url 'masyarakat_dashboard' %}">📊 Dashboard</a></li>
-            <li><a href="{% url 'auth_logout' %}" class="btn-logout">🚪 Logout</a></li>
+            <li><a href="{% url 'public_landing' %}">Beranda</a></li>
+            <li><a href="{% url 'public_info' %}">Info</a></li>
+            <li><a href="{% url 'public_buat_laporan' %}">Buat Laporan</a></li>
+            <li><a href="{% url 'public_tracking' %}" class="active">Tracking</a></li>
+            <li><a href="{% url 'masyarakat_dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'auth_logout' %}" class="btn-logout">Logout</a></li>
         </ul>
     </nav>
 
@@ -705,7 +705,7 @@
         {% comment %} <a href="{% url 'public_landing' %}" class="back-link">← Kembali ke Beranda</a> {% endcomment %}
         
         <div class="page-header">
-            <h1>🔍 Tracking Laporan</h1>
+            <h1>Tracking Laporan</h1>
             <p>Pantau status laporan Anda berdasarkan ID atau kata kunci</p>
         </div>
 
@@ -737,11 +737,11 @@
                     autofocus
                 >
                 <button type="submit" class="btn-search">
-                    🔍 Cari Laporan
+                    Cari Laporan
                 </button>
             </form>
             <div class="search-hint">
-                💡 Tips: Masukkan nomor ID laporan (contoh: 42) atau kata kunci dari judul laporan
+                Tips: Masukkan nomor ID laporan (contoh: 42) atau kata kunci dari judul laporan
             </div>
         </div>
 
@@ -758,14 +758,14 @@
                     </div>
                 </div>
                 <span class="status-badge status-{{ laporan.status }}">
-                    {% if laporan.status == 'MENUNGGU' %}⏳ Menunggu
-                    {% elif laporan.status == 'DIVERIFIKASI' %}✅ Diverifikasi
-                    {% elif laporan.status == 'DITUGASKAN' %}👷 Ditugaskan
-                    {% elif laporan.status == 'MENUJU_LOKASI' %}🚗 Menuju Lokasi
-                    {% elif laporan.status == 'DIPROSES' %}🔧 Diproses
-                    {% elif laporan.status == 'SELESAI' %}🎉 Selesai
-                    {% elif laporan.status == 'DITOLAK' %}❌ Ditolak
-                    {% elif laporan.status == 'KADALUARSA' %}⏰ Kadaluarsa
+                    {% if laporan.status == 'MENUNGGU' %}Menunggu
+                    {% elif laporan.status == 'DIVERIFIKASI' %}Diverifikasi
+                    {% elif laporan.status == 'DITUGASKAN' %}Ditugaskan
+                    {% elif laporan.status == 'MENUJU_LOKASI' %}Menuju Lokasi
+                    {% elif laporan.status == 'DIPROSES' %}Diproses
+                    {% elif laporan.status == 'SELESAI' %}Selesai
+                    {% elif laporan.status == 'DITOLAK' %}Ditolak
+                    {% elif laporan.status == 'KADALUARSA' %}Kadaluarsa
                     {% endif %}
                 </span>
             </div>
@@ -773,10 +773,11 @@
             <!-- Judul & Kategori -->
             <h2 class="result-title">{{ laporan.judul }}</h2>
             <span class="result-category">
-                {% if laporan.kategori == 'KEAMANAN' %}🔒 Keamanan
-                {% elif laporan.kategori == 'KETERTIBAN' %}📋 Ketertiban
-                {% elif laporan.kategori == 'KEBERSIHAN' %}🧹 Kebersihan
-                {% elif laporan.kategori == 'INFRASTRUKTUR' %}🏗️ Infrastruktur
+                {% if laporan.kategori == 'KEAMANAN' %}Gangguan Keamanan
+                {% elif laporan.kategori == 'KETERTIBAN' %}Gangguan Ketertiban Umum
+                {% elif laporan.kategori == 'PENYAKIT_MSY' %}Miras, prostitusi, Narkoba & Judi
+                {% elif laporan.kategori == 'BENCANA' %}Bencana / Kejadian Khusus
+                {% elif laporan.kategori == 'PENEGAKAN_PERDA' %}Pelanggaran Perda
                 {% else %}📌 Lainnya
                 {% endif %}
             </span>
@@ -789,30 +790,30 @@
             <!-- Info Grid -->
             <div class="info-grid">
                 <div class="info-item">
-                    <span class="info-label">📍 Alamat</span>
+                    <span class="info-label">Alamat</span>
                     <span class="info-value">{{ laporan.alamat_kejadian|default:"Tidak dicantumkan" }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">🗺️ Koordinat</span>
+                    <span class="info-label">Koordinat</span>
                     <span class="info-value">{{ laporan.latitude }}, {{ laporan.longitude }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">📅 Terakhir Update</span>
+                    <span class="info-label">Terakhir Update</span>
                     <span class="info-value">{{ laporan.updated_at|date:"d M Y, H:i" }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">📸 Foto</span>
+                    <span class="info-label">Foto</span>
                     <span class="info-value">
                         {% if laporan.foto %}
-                        ✅ Terlampir
+                        Terlampir
                         {% else %}
-                        ❌ Tidak ada
+                        Tidak ada
                         {% endif %}
                     </span>
                 </div>
                 {% if laporan.kadaluarsa_at %}
                 <div class="info-item" style="grid-column: 1 / -1;">
-                    <span class="info-label">⏰ Kadaluarsa</span>
+                    <span class="info-label">Kadaluarsa</span>
                     <span class="info-value">{{ laporan.kadaluarsa_at|date:"d M Y, H:i" }}</span>
                 </div>
                 {% endif %}
@@ -821,25 +822,25 @@
             <!-- Timeline Status -->
             {% if laporan.status_history.all %}
             <div class="timeline-section">
-                <h3 class="timeline-title">📋 Riwayat Status</h3>
+                <h3 class="timeline-title">Riwayat Status</h3>
                 <div class="timeline">
                     {% for history in laporan.status_history.all %}
                     <div class="timeline-item">
                         <div class="timeline-dot"></div>
                         <div class="timeline-status">
-                            {% if history.status == 'MENUNGGU' %}⏳ Menunggu
-                            {% elif history.status == 'DIVERIFIKASI' %}✅ Diverifikasi
-                            {% elif history.status == 'DITUGASKAN' %}👷 Ditugaskan
-                            {% elif history.status == 'MENUJU_LOKASI' %}🚗 Menuju Lokasi
-                            {% elif history.status == 'DIPROSES' %}🔧 Diproses
-                            {% elif history.status == 'SELESAI' %}🎉 Selesai
-                            {% elif history.status == 'DITOLAK' %}❌ Ditolak
-                            {% elif history.status == 'KADALUARSA' %}⏰ Kadaluarsa
+                            {% if history.status == 'MENUNGGU' %}Menunggu
+                            {% elif history.status == 'DIVERIFIKASI' %}Diverifikasi
+                            {% elif history.status == 'DITUGASKAN' %}Ditugaskan
+                            {% elif history.status == 'MENUJU_LOKASI' %}Menuju Lokasi
+                            {% elif history.status == 'DIPROSES' %}Diproses
+                            {% elif history.status == 'SELESAI' %}Selesai
+                            {% elif history.status == 'DITOLAK' %}Ditolak
+                            {% elif history.status == 'KADALUARSA' %}Kadaluarsa
                             {% endif %}
                         </div>
                         <div class="timeline-date">{{ history.changed_at|date:"d M Y, H:i" }}</div>
                         {% if history.keterangan %}
-                        <div class="timeline-note">📝 {{ history.keterangan }}</div>
+                        <div class="timeline-note">{{ history.keterangan }}</div>
                         {% endif %}
                     </div>
                     {% endfor %}
@@ -867,7 +868,7 @@
         {% elif query %}
         <!-- Not Found -->
         <div class="empty-state">
-            <div class="empty-icon">🔍</div>
+            <div class="empty-icon"></div>
             <h3>Laporan Tidak Ditemukan</h3>
             <p>Tidak ada laporan dengan ID atau kata kunci "<strong>{{ query }}</strong>" milik Anda.</p>
             <p style="margin-top: 0.5rem; font-size: 0.85rem;">Pastikan ID laporan benar dan laporan tersebut milik akun Anda.</p>
@@ -875,12 +876,12 @@
         {% else %}
         <!-- Initial Empty State -->
         <div class="empty-state">
-            <div class="empty-icon">📋</div>
+            <div class="empty-icon"></div>
             <h3>Lacak Laporan Anda</h3>
             <p>Masukkan ID laporan atau kata kunci untuk melihat status dan riwayat penanganan laporan Anda.</p>
             <p style="margin-top: 1rem; font-size: 0.9rem;">
                 <a href="{% url 'public_buat_laporan' %}" style="color: #60a5fa; text-decoration: none; font-weight: 600;">
-                    📝 Belum punya laporan? Buat sekarang →
+                    Belum punya laporan? Buat sekarang →
                 </a>
             </p>
         </div>

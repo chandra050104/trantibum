@@ -1103,16 +1103,16 @@
         </div>
         
         <ul class="nav-menu" id="navMenu">
-            <li><a href="{% url 'public_landing' %}"><i class="fa-solid fa-house"></i> Beranda</a></li>
-            <li><a href="{% url 'public_info' %}">ℹ<i class="fa-solid fa-circle-info"></i> Info</a></li>
+            <li><a href="{% url 'public_landing' %}">Beranda</a></li>
+            <li><a href="{% url 'public_info' %}">Info</a></li>
             {% if user.is_authenticated %}
-                <li><a href="{% url 'public_buat_laporan' %}">📝 Buat Laporan</a></li>
-                <li><a href="{% url 'public_tracking' %}">🔍 Tracking</a></li>
-                <li><a href="{% url 'masyarakat_dashboard' %}">📊 Dashboard</a></li>
-                <li><a href="{% url 'auth_logout' %}" class="btn-login">🚪 Logout</a></li>
+                <li><a href="{% url 'public_buat_laporan' %}">Buat Laporan</a></li>
+                <li><a href="{% url 'public_tracking' %}">Tracking</a></li>
+                <li><a href="{% url 'masyarakat_dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'auth_logout' %}" class="btn-login">Logout</a></li>
             {% else %}
-                <li><a href="{% url 'auth_login' %}" class="btn-login"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
-                <li><a href="{% url 'auth_register' %}" class="btn-register"><i class="fa-solid fa-user-plus"></i> Daftar</a></li>
+                <li><a href="{% url 'auth_login' %}" class="btn-login">Login</a></li>
+                <li><a href="{% url 'auth_register' %}" class="btn-register"> Daftar</a></li>
             {% endif %}
         </ul>
     </nav>
@@ -1175,18 +1175,16 @@
             <div class="hero-buttons">
                 {% if user.is_authenticated %}
                     <a href="{% url 'public_buat_laporan' %}" class="btn-primary">
-                        🚀 Laporkan Sekarang
+                        Laporkan Sekarang
                     </a>
                     <a href="{% url 'public_tracking' %}" class="btn-outline">
-                        🔍 Lacak Laporan
+                        Lacak Laporan
                     </a>
                 {% else %}
                     <a href="{% url 'auth_register' %}" class="btn-primary">
-                        <i class="fa-solid fa-user-plus"></i>
                          Mulai Gratis
                     </a>
                     <a href="{% url 'auth_login' %}" class="btn-outline">
-                        <i class="fa-solid fa-right-to-bracket"></i>
                          Masuk
                     </a>
                 {% endif %}
@@ -1357,15 +1355,15 @@
     <!-- ========== CTA ========== -->
     <section class="cta">
         <div class="cta-card">
-            <h2>🚀 Siap Membuat Perubahan?</h2>
+            <h2>Siap Membuat Perubahan?</h2>
             <p>Bergabunglah dengan ribuan warga yang peduli. Laporkan masalah di sekitarmu dan bantu wujudkan lingkungan yang lebih baik.</p>
             {% if user.is_authenticated %}
                 <a href="{% url 'public_buat_laporan' %}" class="btn-primary">
-                    📝 Buat Laporan Baru
+                Buat Laporan Baru
                 </a>
             {% else %}
                 <a href="{% url 'auth_register' %}" class="btn-primary">
-                    ✨ Daftar Sekarang - Gratis!
+                Daftar Sekarang
                 </a>
             {% endif %}
         </div>
@@ -1381,11 +1379,11 @@
             
             <div class="footer-section">
                 <h3>Menu Utama</h3>
-                <a href="{% url 'public_landing' %}">🏠 Beranda</a>
-                <a href="{% url 'public_info' %}">ℹ️ Informasi</a>
-                <a href="{% url 'public_buat_laporan' %}">📝 Buat Laporan</a>
-                <a href="{% url 'public_tracking' %}">🔍 Tracking</a>
-                <a href="{% url 'public_info' %}?tab=faq">❓ FAQ</a>
+                <a href="{% url 'public_landing' %}">Beranda</a>
+                <a href="{% url 'public_info' %}">Informasi</a>
+                <a href="{% url 'public_buat_laporan' %}">Buat Laporan</a>
+                <a href="{% url 'public_tracking' %}">Tracking</a>
+                <a href="{% url 'public_info' %}?tab=faq">FAQ</a>
             </div>
             
             <div class="footer-section">

@@ -666,16 +666,16 @@
         </div>
         
         <ul class="nav-menu" id="navMenu">
-            <li><a href="{% url 'public_landing' %}">🏠 Beranda</a></li>
-            <li><a href="{% url 'public_info' %}" class="active">ℹ️ Info</a></li>
+            <li><a href="{% url 'public_landing' %}">Beranda</a></li>
+            <li><a href="{% url 'public_info' %}" class="active">Info</a></li>
             {% if user.is_authenticated %}
-                <li><a href="{% url 'public_buat_laporan' %}">📝 Buat Laporan</a></li>
-                <li><a href="{% url 'public_tracking' %}">🔍 Tracking</a></li>
-                <li><a href="{% url 'masyarakat_dashboard' %}">📊 Dashboard</a></li>
-                <li><a href="{% url 'auth_logout' %}" class="btn-logout">🚪 Logout</a></li>
+                <li><a href="{% url 'public_buat_laporan' %}">Buat Laporan</a></li>
+                <li><a href="{% url 'public_tracking' %}">Tracking</a></li>
+                <li><a href="{% url 'masyarakat_dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'auth_logout' %}" class="btn-logout">Logout</a></li>
             {% else %}
-                <li><a href="{% url 'auth_login' %}" class="btn-login">🔑 Login</a></li>
-                <li><a href="{% url 'auth_register' %}" class="btn-register">✨ Daftar</a></li>
+                <li><a href="{% url 'auth_login' %}" class="btn-login">Login</a></li>
+                <li><a href="{% url 'auth_register' %}" class="btn-register">Daftar</a></li>
             {% endif %}
         </ul>
     </nav>
@@ -683,23 +683,23 @@
     <!-- ========== MAIN CONTENT ========== -->
     <div class="main-container">
         <div class="page-header">
-            <h1>ℹ️ Pusat Informasi</h1>
+            <h1>Pusat Informasi</h1>
             <p>Berita terkini, FAQ, kontak darurat, dan edukasi untuk warga Kecamatan Medan Selayang</p>
         </div>
 
         <!-- Tab Navigation -->
         <div class="tab-nav">
             <a href="?tab=berita" class="tab-btn {% if active_tab == 'berita' or not active_tab %}active{% endif %}">
-                📰 Berita
+                Berita
             </a>
             <a href="?tab=faq" class="tab-btn {% if active_tab == 'faq' %}active{% endif %}">
-                ❓ FAQ
+                FAQ
             </a>
             <a href="?tab=kontak" class="tab-btn {% if active_tab == 'kontak' %}active{% endif %}">
-                📞 Kontak Darurat
+                Kontak Darurat
             </a>
             <a href="?tab=edukasi" class="tab-btn {% if active_tab == 'edukasi' %}active{% endif %}">
-                📚 Edukasi
+                Edukasi
             </a>
         </div>
 
@@ -708,9 +708,9 @@
             <div class="news-grid">
                 <!-- Berita 1 -->
                 <div class="news-card">
-                    <div class="news-image">📢</div>
+                    <div class="news-image"></div>
                     <div class="news-body">
-                        <div class="news-date">📅 15 Januari 2025</div>
+                        <div class="news-date">15 Januari 2026</div>
                         <h3 class="news-title">Peningkatan Keamanan Lingkungan di Medan Selayang</h3>
                         <p class="news-excerpt">Pemerintah Kecamatan Medan Selayang meluncurkan program baru untuk meningkatkan keamanan lingkungan dengan melibatkan partisipasi aktif masyarakat melalui aplikasi LaporWarga.</p>
                     </div>
@@ -718,9 +718,9 @@
 
                 <!-- Berita 2 -->
                 <div class="news-card">
-                    <div class="news-image">🏗️</div>
+                    <div class="news-image"></div>
                     <div class="news-body">
-                        <div class="news-date">📅 10 Januari 2025</div>
+                        <div class="news-date">10 Januari 2025</div>
                         <h3 class="news-title">Perbaikan Infrastruktur Jalan di Kelurahan Asam Kumbang</h3>
                         <p class="news-excerpt">Dinas PU menargetkan perbaikan 5 titik jalan rusak di Kelurahan Asam Kumbang berdasarkan laporan warga melalui sistem LaporWarga.</p>
                     </div>
@@ -730,7 +730,7 @@
                 <div class="news-card">
                     <div class="news-image">🌿</div>
                     <div class="news-body">
-                        <div class="news-date">📅 5 Januari 2025</div>
+                        <div class="news-date">5 Januari 2025</div>
                         <h3 class="news-title">Gerakan Kebersihan "Jumat Bersih" di Seluruh Kelurahan</h3>
                         <p class="news-excerpt">Camat Medan Selayang mengajak seluruh warga berpartisipasi dalam gerakan Jumat Bersih untuk menciptakan lingkungan yang sehat dan nyaman.</p>
                     </div>
@@ -741,12 +741,11 @@
         <!-- ==================== TAB: FAQ ==================== -->
         <div class="tab-content {% if active_tab == 'faq' %}active{% endif %}" id="tab-faq">
             <div class="content-card">
-                <h3>❓ Pertanyaan yang Sering Diajukan</h3>
+                <h3>Pertanyaan yang Sering Diajukan</h3>
                 
                 <div class="faq-item">
                     <button class="faq-question" onclick="toggleFAQ(this)">
                         Bagaimana cara membuat laporan?
-                        <span class="faq-icon">➕</span>
                     </button>
                     <div class="faq-answer">
                         <p>Anda dapat membuat laporan melalui menu "Buat Laporan" setelah login. Isi form dengan judul, kategori, deskripsi, dan tentukan lokasi di peta. Laporan akan langsung masuk ke sistem untuk diverifikasi oleh admin.</p>
@@ -756,7 +755,6 @@
                 <div class="faq-item">
                     <button class="faq-question" onclick="toggleFAQ(this)">
                         Berapa lama laporan diproses?
-                        <span class="faq-icon">➕</span>
                     </button>
                     <div class="faq-answer">
                         <p>Laporan akan diverifikasi dalam waktu 1x24 jam oleh admin. Setelah diverifikasi, petugas akan ditugaskan dan proses penanganan dimulai. Waktu penyelesaian tergantung pada jenis dan tingkat keparahan gangguan.</p>
@@ -766,7 +764,6 @@
                 <div class="faq-item">
                     <button class="faq-question" onclick="toggleFAQ(this)">
                         Apakah identitas pelapor dirahasiakan?
-                        <span class="faq-icon">➕</span>
                     </button>
                     <div class="faq-answer">
                         <p>Ya, identitas pelapor hanya diketahui oleh admin sistem. Petugas lapangan hanya menerima informasi laporan tanpa data pribadi pelapor. Kami menjaga kerahasiaan data sesuai kebijakan privasi yang berlaku.</p>
@@ -776,7 +773,6 @@
                 <div class="faq-item">
                     <button class="faq-question" onclick="toggleFAQ(this)">
                         Bagaimana cara melacak status laporan?
-                        <span class="faq-icon">➕</span>
                     </button>
                     <div class="faq-answer">
                         <p>Gunakan menu "Tracking" dan masukkan ID laporan yang Anda terima saat membuat laporan. Anda dapat melihat status terkini dan riwayat penanganan secara real-time.</p>
@@ -786,7 +782,6 @@
                 <div class="faq-item">
                     <button class="faq-question" onclick="toggleFAQ(this)">
                         Apa yang harus dilakukan jika laporan ditolak?
-                        <span class="faq-icon">➕</span>
                     </button>
                     <div class="faq-answer">
                         <p>Jika laporan ditolak, Anda akan menerima notifikasi beserta alasan penolakan. Anda dapat membuat laporan baru dengan melengkapi informasi yang kurang atau menghubungi admin untuk klarifikasi lebih lanjut.</p>
@@ -796,7 +791,6 @@
                 <div class="faq-item">
                     <button class="faq-question" onclick="toggleFAQ(this)">
                         Apakah ada batasan jumlah laporan?
-                        <span class="faq-icon">➕</span>
                     </button>
                     <div class="faq-answer">
                         <p>Tidak ada batasan jumlah laporan. Anda dapat membuat laporan sebanyak yang diperlukan. Namun, pastikan setiap laporan valid dan tidak duplikat untuk mempercepat proses verifikasi.</p>
@@ -866,7 +860,7 @@
             <div class="edu-grid">
                 <!-- Keamanan Lingkungan -->
                 <div class="edu-card">
-                    <div class="edu-icon">🏘️</div>
+                    <div class="edu-icon"></div>
                     <h3>Keamanan Lingkungan</h3>
                     <p>Tips menjaga keamanan lingkungan tempat tinggal Anda</p>
                     <ul class="edu-tips">
@@ -880,7 +874,7 @@
 
                 <!-- Ketertiban Umum -->
                 <div class="edu-card">
-                    <div class="edu-icon">📋</div>
+                    <div class="edu-icon"></div>
                     <h3>Ketertiban Umum</h3>
                     <p>Memahami aturan ketertiban umum di wilayah kecamatan</p>
                     <ul class="edu-tips">
@@ -894,7 +888,7 @@
 
                 <!-- Kebersihan -->
                 <div class="edu-card">
-                    <div class="edu-icon">🧹</div>
+                    <div class="edu-icon"></div>
                     <h3>Kebersihan Lingkungan</h3>
                     <p>Edukasi pengelolaan sampah dan kebersihan</p>
                     <ul class="edu-tips">
@@ -908,7 +902,7 @@
 
                 <!-- Pelaporan Efektif -->
                 <div class="edu-card">
-                    <div class="edu-icon">📸</div>
+                    <div class="edu-icon"></div>
                     <h3>Tips Pelaporan Efektif</h3>
                     <p>Cara membuat laporan yang baik dan benar</p>
                     <ul class="edu-tips">
@@ -922,7 +916,7 @@
 
                 <!-- Hak & Kewajiban -->
                 <div class="edu-card">
-                    <div class="edu-icon">⚖️</div>
+                    <div class="edu-icon"></div>
                     <h3>Hak & Kewajiban Warga</h3>
                     <p>Memahami hak dan kewajiban sebagai warga</p>
                     <ul class="edu-tips">
@@ -936,7 +930,7 @@
 
                 <!-- Pencegahan Bencana -->
                 <div class="edu-card">
-                    <div class="edu-icon">⚠️</div>
+                    <div class="edu-icon"></div>
                     <h3>Kesiapsiagaan Bencana</h3>
                     <p>Tips menghadapi situasi darurat dan bencana</p>
                     <ul class="edu-tips">

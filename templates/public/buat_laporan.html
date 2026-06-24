@@ -622,12 +622,12 @@
         </div>
         
         <ul class="nav-menu" id="navMenu">
-            <li><a href="{% url 'public_landing' %}">🏠 Beranda</a></li>
-            <li><a href="{% url 'public_info' %}">ℹ️ Info</a></li>
-            <li><a href="{% url 'public_buat_laporan' %}" class="active">📝 Buat Laporan</a></li>
-            <li><a href="{% url 'public_tracking' %}">🔍 Tracking</a></li>
-            <li><a href="{% url 'masyarakat_dashboard' %}">📊 Dashboard</a></li>
-            <li><a href="{% url 'auth_logout' %}" class="btn-logout">🚪 Logout</a></li>
+            <li><a href="{% url 'public_landing' %}">Beranda</a></li>
+            <li><a href="{% url 'public_info' %}">ℹInfo</a></li>
+            <li><a href="{% url 'public_buat_laporan' %}" class="active">Buat Laporan</a></li>
+            <li><a href="{% url 'public_tracking' %}">Tracking</a></li>
+            <li><a href="{% url 'masyarakat_dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'auth_logout' %}" class="btn-logout">Logout</a></li>
         </ul>
     </nav>
 
@@ -635,7 +635,7 @@
     <div class="main-container">
         <!-- Page Header -->
         <div class="page-header">
-            <h1>📝 Buat Laporan Baru</h1>
+            <h1>Buat Laporan Baru</h1>
             <p>Laporkan gangguan Trantibum di wilayah Kecamatan Medan Selayang</p>
         </div>
 
@@ -658,7 +658,7 @@
                 
                 <!-- SECTION: Informasi Laporan -->
                 <div class="form-section">
-                    <div class="section-title">📋 Informasi Laporan</div>
+                    <div class="section-title">Informasi Laporan</div>
                     
                     <!-- Judul -->
                     <div class="form-group">
@@ -711,7 +711,7 @@
 
                 <!-- SECTION: Lokasi Kejadian -->
                 <div class="form-section">
-                    <div class="section-title">📍 Lokasi Kejadian</div>
+                    <div class="section-title">Lokasi Kejadian</div>
 
                     <div class="form-group">
                         <label>Cari Alamat</label>
@@ -729,7 +729,7 @@
                             Pilih Lokasi di Peta <span class="required">*</span>
                         </label>
                         <div class="map-wrapper">
-                            <div class="map-instruction">👆 Geser pin ke lokasi kejadian yang tepat</div>
+                            <div class="map-instruction">Geser pin ke lokasi kejadian yang tepat</div>
                             <div id="map"></div>
                         </div>
                         <div class="form-hint">Klik pada peta untuk menempatkan pin, lalu geser ke lokasi yang tepat</div>
@@ -769,7 +769,7 @@
 
                     <!-- Koordinat Display -->
                     <div class="coordinates-display" id="coordsDisplay" style="display: none;">
-                        📍 Koordinat terpilih: 
+                        Koordinat terpilih: 
                         <strong id="latDisplay">-</strong>, 
                         <strong id="lngDisplay">-</strong>
                     </div>
@@ -790,7 +790,7 @@
 
                 <!-- SECTION: Bukti Pendukung -->
                 <div class="form-section">
-                    <div class="section-title">📸 Bukti Pendukung</div>
+                    <div class="section-title">Bukti Pendukung</div>
                     
                     <div class="form-group">
                         <label for="foto">Foto / Gambar</label>
@@ -807,11 +807,11 @@
 
                 <!-- Tombol Submit -->
                 <button type="submit" class="btn-submit">
-                    🚀 Kirim Laporan
+                    Kirim Laporan
                 </button>
                 
                 <button type="reset" class="btn-reset" onclick="resetMapMarker()">
-                    🔄 Reset Form
+                    Reset Form
                 </button>
             </form>
         </div>
