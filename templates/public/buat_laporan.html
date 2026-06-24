@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buat Laporan - LaporWarga</title>
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
@@ -623,7 +623,7 @@
         
         <ul class="nav-menu" id="navMenu">
             <li><a href="{% url 'public_landing' %}">Beranda</a></li>
-            <li><a href="{% url 'public_info' %}">ℹInfo</a></li>
+            <li><a href="{% url 'public_info' %}">Info</a></li>
             <li><a href="{% url 'public_buat_laporan' %}" class="active">Buat Laporan</a></li>
             <li><a href="{% url 'public_tracking' %}">Tracking</a></li>
             <li><a href="{% url 'masyarakat_dashboard' %}">Dashboard</a></li>
@@ -718,7 +718,7 @@
                         <div style="display:flex;gap:0.5rem;">
                             <input type="text" id="searchAddress" class="form-control" placeholder="Ketik alamat lengkap..." style="flex:1;">
                             <button type="button" id="searchBtn" class="btn-submit" style="width:auto;padding:0.7rem 1.2rem;font-size:0.9rem;white-space:nowrap;flex-shrink:0;">Cari</button>
-                            <button type="button" id="locateBtn" class="btn-submit" style="width:auto;padding:0.7rem 1rem;font-size:0.9rem;white-space:nowrap;flex-shrink:0;background:linear-gradient(135deg,#10b981,#059669);" title="Kembali ke lokasi saya"></button>
+                            <button type="button" id="locateBtn" class="btn-submit" style="width:auto;padding:0.7rem 1rem;font-size:0.9rem;white-space:nowrap;flex-shrink:0;background:linear-gradient(135deg,#10b981,#059669);" title="Kembali ke lokasi saya"><i class="fas fa-map-marker-alt"></i></button>
                         </div>
                         <div class="form-hint">Ketik alamat, map akan otomatis menuju lokasi</div>
                     </div>
