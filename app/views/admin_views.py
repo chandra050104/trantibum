@@ -391,6 +391,14 @@ def api_laporan_json(request):
                     'keterangan': d.keterangan or '',
                 })
 
+        bukti_url = ''
+        bukti_is_video = False
+        if l.foto:
+            bukti_url = l.foto.url
+            ext = l.foto.url.lower()
+            if any(vid_ext in ext for vid_ext in ['.mp4', '.avi', '.mov', '.webm']):
+                bukti_is_video = True
+
         data.append({
             'id': l.id,
             'judul': l.judul,
@@ -402,6 +410,8 @@ def api_laporan_json(request):
             'color': status_colors.get(l.status, 'gray'),
             'created_at': l.created_at.strftime('%d/%m/%Y %H:%M'),
             'dokumentasi': dokumentasi_list,
+            'foto_url': bukti_url,
+            'foto_is_video': bukti_is_video,
         })
     
     return JsonResponse({'laporan': data})

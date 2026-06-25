@@ -809,25 +809,37 @@
                     </div>
                 </div>
 
-                    {% if laporan.status in 'DITUGASKAN,MENUJU_LOKASI,DIPROSES' %}
-                        {% with penanganan=laporan.penanganan.first %}
-                            {% if penanganan and penanganan.petugas.phone %}
-                            <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:12px;padding:1rem;margin-bottom:1.5rem;text-align:center;">
-                                <p style="color:#f87171;font-weight:700;margin-bottom:0.5rem;">🚨 Hubungi Petugas: <strong>{{ penanganan.petugas.username }}</strong></p>
-                                <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;">
-                                    <a href="tel:{{ penanganan.petugas.phone }}" style="background:#dc2626;color:white;padding:0.5rem 1.2rem;border-radius:25px;text-decoration:none;font-weight:700;">
-                                        <i class="fa-solid fa-phone"></i>
-                                        Telepon
-                                    </a>
-                                    <a href="https://wa.me/62{{ penanganan.petugas.phone|slice:'1:' }}" target="_blank" style="background:#25d366;color:white;padding:0.5rem 1.2rem;border-radius:25px;text-decoration:none;font-weight:700;">
-                                        <i class="fa-brands fa-whatsapp"></i>
-                                        WhatsApp
-                                    </a>
-                                </div>
+                {% if laporan.status in 'DITUGASKAN,MENUJU_LOKASI,DIPROSES' %}
+                {% with penanganan=laporan.penanganan.first %}
+                    {% if penanganan and penanganan.petugas.all %}
+                    <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:12px;padding:1rem;margin-bottom:1.5rem;text-align:center;">
+                        <p style="color:#f87171;font-weight:700;margin-bottom:0.5rem;">Hubungi Petugas</p>
+                        {% for petugas in penanganan.petugas.all %}
+                        <div style="margin-bottom:0.8rem;padding-bottom:0.8rem;border-bottom:1px solid rgba(255,255,255,0.1);">
+                            <p style="color:#fbbf24;font-weight:700;margin-bottom:0.3rem;">
+                                👷 {{ petugas.username }}
+                                {% if petugas.jabatan %}<span style="font-size:0.75rem;color:#999;">({{ petugas.get_jabatan_display }})</span>{% endif %}
+                            </p>
+                            {% if petugas.phone %}
+                            <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;">
+                                <a href="tel:{{ petugas.phone }}" style="background:#dc2626;color:white;padding:0.4rem 1rem;border-radius:25px;text-decoration:none;font-weight:700;font-size:0.85rem;">
+                                    <i class="fa-solid fa-phone"></i>
+                                    Telepon
+                                </a>
+                                <a href="https://wa.me/62{{ petugas.phone|slice:'1:' }}" target="_blank" style="background:#25d366;color:white;padding:0.4rem 1rem;border-radius:25px;text-decoration:none;font-weight:700;font-size:0.85rem;">
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                    WhatsApp
+                                </a>
                             </div>
+                            {% else %}
+                            <p style="color:#777;font-size:0.8rem;">Tidak ada nomor telepon</p>
                             {% endif %}
-                        {% endwith %}
+                        </div>
+                        {% endfor %}
+                    </div>
                     {% endif %}
+                {% endwith %}
+            {% endif %}
 
                 <span class="status-badge-lg status-{{ laporan.status }}">
                     {% if laporan.status == 'MENUNGGU' %}⏳ Menunggu Verifikasi
@@ -842,9 +854,9 @@
                 </span>
             </div>
 
-            <!-- Detail Grid -->
+           <!-- Detail Grid -->
             <div class="detail-grid">
-                <!-- Main Detail -->
+                <!-- ========== KOLOM KIRI: Main Detail ========== -->
                 <div>
                     <!-- Deskripsi -->
                     <div class="detail-card" style="margin-bottom: 1.5rem;">
@@ -858,14 +870,7 @@
                         <div class="info-grid">
                             <div class="info-item">
                                 <div class="info-label">📂 Kategori</div>
-                                <div class="info-value">
-                                    {% if laporan.kategori == 'KEAMANAN' %}🔒 Keamanan
-                                    {% elif laporan.kategori == 'KETERTIBAN' %}📋 Ketertiban
-                                    {% elif laporan.kategori == 'KEBERSIHAN' %}🧹 Kebersihan
-                                    {% elif laporan.kategori == 'INFRASTRUKTUR' %}🏗️ Infrastruktur
-                                    {% else %}📌 Lainnya
-                                    {% endif %}
-                                </div>
+                                <div class="info-value">{{ laporan.get_kategori_display }}</div>
                             </div>
                             <div class="info-item">
                                 <div class="info-label">📍 Alamat</div>
@@ -888,16 +893,20 @@
                         </div>
                     </div>
 
-                    <!-- Foto -->
                     <!-- Foto/Video Bukti -->
                     {% if laporan.foto %}
                     <div class="detail-card" style="margin-bottom: 1.5rem;">
                         <h3><span class="icon">📸</span> Bukti Laporan</h3>
                         {% with ext=laporan.foto.url|lower %}
                             {% if '.mp4' in ext or '.avi' in ext or '.mov' in ext or '.webm' in ext %}
-                                <video controls style="max-width:100%;border-radius:10px;margin-top:0.5rem;">
-                                    <source src="{{ laporan.foto.url }}" type="video/mp4">
-                                    Browser tidak mendukung video.
+                                <video controls style="max-width:100%;border-radius:10px;margin-top:0.5rem;" preload="metadata">
+                                    <source src="{{ laporan.foto.url }}" 
+                                        {% if '.mp4' in ext %}type="video/mp4"
+                                        {% elif '.webm' in ext %}type="video/webm"
+                                        {% elif '.mov' in ext %}type="video/quicktime"
+                                        {% elif '.avi' in ext %}type="video/x-msvideo"
+                                        {% endif %}>
+                                    <p style="color:#f87171;">⚠️ Browser tidak mendukung format video ini. <a href="{{ laporan.foto.url }}" download style="color:var(--emas);">Download video</a></p>
                                 </video>
                             {% else %}
                                 <img src="{{ laporan.foto.url }}" alt="Foto laporan" style="max-width:100%;border-radius:10px;margin-top:0.5rem;">
@@ -906,8 +915,9 @@
                     </div>
                     {% endif %}
                 </div>
+                <!-- ========== AKHIR KOLOM KIRI ========== -->
 
-                <!-- Sidebar Detail -->
+                <!-- ========== KOLOM KANAN: Sidebar ========== -->
                 <div>
                     <!-- Timeline -->
                     <div class="detail-card" style="margin-bottom: 1.5rem;">
@@ -942,6 +952,7 @@
                         {% endif %}
                     </div>
 
+                    <!-- Dokumentasi Penanganan -->
                     {% if dokumentasi_list %}
                     <div class="detail-card" style="margin-bottom: 1.5rem;">
                         <h3><span class="icon">📸</span> Dokumentasi Penanganan</h3>
@@ -950,11 +961,16 @@
                             <div style="border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
                                 {% with ext=dok.foto.url|lower %}
                                     {% if '.mp4' in ext or '.avi' in ext or '.mov' in ext or '.webm' in ext %}
-                                        <video controls style="width:100%;height:120px;object-fit:cover;display:block;">
-                                            <source src="{{ dok.foto.url }}" type="video/mp4">
+                                        <video controls style="width:100%;height:120px;object-fit:cover;display:block;" preload="metadata">
+                                            <source src="{{ dok.foto.url }}" 
+                                                {% if '.mp4' in ext %}type="video/mp4"
+                                                {% elif '.webm' in ext %}type="video/webm"
+                                                {% elif '.mov' in ext %}type="video/quicktime"
+                                                {% elif '.avi' in ext %}type="video/x-msvideo"
+                                                {% endif %}>
                                         </video>
                                     {% else %}
-                                        <img src="{{ dok.foto.url }}" alt="Dokumentasi" style="width:100%;height:120px;object-fit:cover;display:block;">
+                                        <img src="{{ dok.foto.url }}" alt="Dokumentasi" style="width:100%;height:120px;object-fit:cover;display:block;" loading="lazy">
                                     {% endif %}
                                 {% endwith %}
                                 {% if dok.keterangan %}
@@ -999,8 +1015,9 @@
                         </a>
                     </div>
                 </div>
+                <!-- ========== AKHIR KOLOM KANAN ========== -->
             </div>
-        </div>
+            <!-- ========== AKHIR DETAIL GRID ========== -->
 
         <footer class="footer">
             <p>&copy; <span id="currentYear"></span> LaporWarga - Kecamatan Medan Selayang. All rights reserved.</p>
