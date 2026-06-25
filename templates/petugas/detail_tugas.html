@@ -215,9 +215,29 @@
                     </div>
 
                     <div class="detail-card">
-                        <h3><span class="icon">📸</span> Dokumentasi Penanganan</h3>
-                        {% if dokumentasi_list %}
-                        <div class="dokumentasi-grid">{% for dok in dokumentasi_list %}<div class="dokumentasi-item"><img src="{{ dok.foto.url }}" alt="Dokumentasi">{% if dok.keterangan %}<div class="dokumentasi-caption">{{ dok.keterangan }}</div>{% endif %}</div>{% endfor %}</div>
+                    <h3><span class="icon">📸</span> Dokumentasi Penanganan</h3>
+                    {% if dokumentasi_list %}
+                    <div class="dokumentasi-grid">
+                        {% for dok in dokumentasi_list %}
+                        <div class="dokumentasi-item">
+                            {% with ext=dok.foto.url|lower %}
+                                {% if '.mp4' in ext or '.avi' in ext or '.mov' in ext or '.webm' in ext %}
+                                    <video controls style="width:100%;height:120px;object-fit:cover;display:block;" preload="metadata">
+                                        <source src="{{ dok.foto.url }}" 
+                                            {% if '.mp4' in ext %}type="video/mp4"
+                                            {% elif '.webm' in ext %}type="video/webm"
+                                            {% elif '.mov' in ext %}type="video/quicktime"
+                                            {% elif '.avi' in ext %}type="video/x-msvideo"
+                                            {% endif %}>
+                                    </video>
+                                {% else %}
+                                    <img src="{{ dok.foto.url }}" alt="Dokumentasi" loading="lazy">
+                                {% endif %}
+                            {% endwith %}
+                            {% if dok.keterangan %}<div class="dokumentasi-caption">{{ dok.keterangan }}</div>{% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
                         {% else %}<p style="color:rgba(255,255,255,0.35);text-align:center;padding:1rem;">Belum ada dokumentasi</p>{% endif %}
                         {% if laporan.status not in 'SELESAI,DITOLAK,KADALUARSA' %}
                         <form method="POST" action="{% url 'petugas_upload_dokumentasi' penanganan.id %}" enctype="multipart/form-data" style="margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.05);">
