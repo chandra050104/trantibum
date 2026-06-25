@@ -222,7 +222,7 @@
                         {% if laporan.status not in 'SELESAI,DITOLAK,KADALUARSA' %}
                         <form method="POST" action="{% url 'petugas_upload_dokumentasi' penanganan.id %}" enctype="multipart/form-data" style="margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.05);">
                             {% csrf_token %}
-                            <div class="form-group"><label>📷 Upload Foto</label><input type="file" name="foto" class="form-control" accept="image/*" required></div>
+                            <div class="form-group"><label>📷 Upload Foto/Video</label><input type="file" name="foto" class="form-control" accept="image/*,video/*" required></div>
                             <div class="form-group"><label>📝 Keterangan</label><input type="text" name="keterangan" class="form-control" placeholder="Deskripsi singkat foto..."></div>
                             <button type="submit" class="btn-upload">📤 Upload Dokumentasi</button>
                         </form>{% endif %}

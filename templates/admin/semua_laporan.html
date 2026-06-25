@@ -611,7 +611,11 @@
                             html += '<div class="detail-section"><div class="detail-label">📸 Dokumentasi Penanganan (' + laporan.dokumentasi.length + ' foto)</div><div class="dokumentasi-mini">';
                             for (var d = 0; d < laporan.dokumentasi.length; d++) {
                                 var dok = laporan.dokumentasi[d];
-                                html += '<div><img src="' + dok.foto_url + '" alt="Dokumentasi" loading="lazy">';
+                                if (dok.foto_url.match(/\.(mp4|avi|mov|webm)$/i)) {
+                                    html += '<div><video controls style="width:100%;height:100px;object-fit:cover;border-radius:8px;"><source src="' + dok.foto_url + '" type="video/mp4"></video>';
+                                } else {
+                                    html += '<div><img src="' + dok.foto_url + '" alt="Dokumentasi" loading="lazy">';
+                                }
                                 if (dok.keterangan) { html += '<div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-align:center;padding:0.3rem;">' + dok.keterangan + '</div>'; }
                                 html += '</div>';
                             }
