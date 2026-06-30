@@ -49,16 +49,35 @@ def buat_laporan(request):
             messages.error(request, 'Koordinat tidak valid.')
             return render(request, 'public/buat_laporan.html')
 
-        laporan = Laporan.objects.create(
-            pelapor=request.user,
-            judul=judul,
-            deskripsi=deskripsi,
-            kategori=kategori,
-            latitude=lat,
-            longitude=lng,
-            alamat_kejadian=alamat_kejadian or '',
-            foto=foto
-        )
+        # ========== VALIDASI FILE ==========
+        if foto:
+            # Validasi ukuran (max 10MB)
+            if foto.size > 10 * 1024 * 1024:
+                messages.error(request, 'Ukuran file terlalu besar. Maksimal 10MB.')
+                return render(request, 'public/buat_laporan.html')
+            
+            # Validasi ekstensi
+            allowed_extensions = ['jpg', 'jpeg', 'png', 'gif', 'mp4', 'avi', 'mov', 'webm']
+            ext = foto.name.split('.')[-1].lower() if '.' in foto.name else ''
+            if ext not in allowed_extensions:
+                messages.error(request, f'Format file .{ext} tidak didukung. Gunakan: {", ".join(allowed_extensions)}')
+                return render(request, 'public/buat_laporan.html')
+        # ========== AKHIR VALIDASI ==========
+
+        try:
+            laporan = Laporan.objects.create(
+                pelapor=request.user,
+                judul=judul,
+                deskripsi=deskripsi,
+                kategori=kategori,
+                latitude=lat,
+                longitude=lng,
+                alamat_kejadian=alamat_kejadian or '',
+                foto=foto
+            )
+        except Exception as e:
+            messages.error(request, f'Gagal upload file. Pastikan file tidak rusak. Error: {str(e)}')
+            return render(request, 'public/buat_laporan.html')
 
         # Notifikasi ke semua admin
         admin_list = User.objects.filter(role='ADMIN')
