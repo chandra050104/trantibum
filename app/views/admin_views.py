@@ -337,7 +337,8 @@ def monitoring_peta(request):
         laporan_json.append({
             'id': l.id,
             'judul': l.judul,
-            'status': l.get_status_display(),
+            'status': l.status,                
+            'status_display': l.get_status_display(), 
             'kategori': l.get_kategori_display(),
             'pelapor': l.pelapor.username,
             'latitude': float(l.latitude),
@@ -402,7 +403,7 @@ def api_laporan_json(request):
         data.append({
             'id': l.id,
             'judul': l.judul,
-            'status': l.status(),
+            'status': l.status,
             'status_display': l.get_status_display(),
             'kategori': l.get_kategori_display(),
             'pelapor': l.pelapor.username,
