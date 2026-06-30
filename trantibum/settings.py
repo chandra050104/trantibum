@@ -33,6 +33,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app',
+    'cloudinary',     
+    'cloudinary_storage',  
 ]
 
 MIDDLEWARE = [
@@ -151,3 +153,12 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # ==================== DEFAULT AUTO FIELD ====================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ==================== CLOUDINARY ====================
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'doi1dj9zy',
+    'API_KEY': '212393748116751',
+    'API_SECRET': 'NeWEINdPBl_U6ZJhb5js4FupW9o',
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
