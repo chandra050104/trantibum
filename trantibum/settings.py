@@ -162,3 +162,13 @@ CLOUDINARY_STORAGE = {
 }
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+
+from cloudinary import config as cloudinary_config
+
+cloudinary_config(
+    cloud_name='doi1dj9zy',
+    api_key='212393748116751',
+    api_secret='NeWEINdPBl_U6ZJhb5js4FupW9o',
+    resource_type='auto'
+)
