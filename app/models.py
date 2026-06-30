@@ -60,7 +60,7 @@ class Laporan(models.Model):
     latitude = models.DecimalField(max_digits=10, decimal_places=7)
     longitude = models.DecimalField(max_digits=10, decimal_places=7)
     alamat_kejadian = models.TextField(blank=True, null=True)
-    foto = models.ImageField(
+    foto = models.FileField(
         upload_to='laporan/',
         blank=True,
         null=True,
@@ -119,7 +119,7 @@ class Penanganan(models.Model):
 # ==================== DOKUMENTASI PENANGANAN ====================
 class DokumentasiPenanganan(models.Model):
     penanganan = models.ForeignKey(Penanganan, on_delete=models.CASCADE, related_name='dokumentasi')
-    foto = models.ImageField(
+    foto = models.FileField(
         upload_to='dokumentasi/',
         validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'gif', 'mp4', 'avi', 'mov', 'webm'])]
     )
