@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import FileExtensionValidator
+from cloudinary_storage.storage import RawMediaCloudinaryStorage
 from django.utils import timezone
 
 # ==================== USER ====================
@@ -64,6 +65,7 @@ class Laporan(models.Model):
         upload_to='laporan/',
         blank=True,
         null=True,
+        storage=RawMediaCloudinaryStorage(),
         validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'gif', 'mp4', 'avi', 'mov', 'webm'])]
     )
     created_at = models.DateTimeField(auto_now_add=True)
@@ -121,6 +123,7 @@ class DokumentasiPenanganan(models.Model):
     penanganan = models.ForeignKey(Penanganan, on_delete=models.CASCADE, related_name='dokumentasi')
     foto = models.FileField(
         upload_to='dokumentasi/',
+        storage=RawMediaCloudinaryStorage(),
         validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'gif', 'mp4', 'avi', 'mov', 'webm'])]
     )
     keterangan = models.CharField(max_length=200, blank=True, null=True)
