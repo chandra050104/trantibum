@@ -89,8 +89,6 @@ WSGI_APPLICATION = 'trantibum.wsgi.application'
 #     }
 # }
 
-import os
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
